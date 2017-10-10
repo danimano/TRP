@@ -1,0 +1,65 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{commath}
+\usepackage{upgreek}
+\usepackage[numbib]{tocbibind}
+\usepackage{hyperref}
+
+\title{Tutored Research Project II}
+\author{The Dream Team}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Spoiler-free abstract that makes you want to read the next X pages of whatever we are going to say.
+\end{abstract}
+
+\section{Introduction}
+Upside-down pyramid which contains a description of our domain (deep neural networks), presents our topic (visualization of networks and intuition that deeper networks generalize better than large and shallow ones. Present our outline in a fancy and exciting way.
+
+\section{State-of-the-art / Existing solutions}
+If relevant, can be a synthesis of the work done in Madrid but it seems like it won't be the case. For the state-of-the-art and existing solutions:
+- for the visualization part, there are not really existing solutions to the precise things we want to achieve, but the TensorFlow Playground is already a good and interesting neural network visualization tool that might be worth mentioning.
+- for the intuition part (deeper networks crush shallow networks), mention paper \citep{Mhaskar17}, do some other research.
+
+
+\section{Software requirements}
+\subsection{Needs (functional / non-functional needs)}
+Function and non-functional needs for both of our tasks.
+\subsection{Constraints}
+Constraints for both of our tasks.
+
+\section{Software architecture}
+(ULM schemes), how our software is organized, what our modules are. Also insert a magnificently beautiful Gantt chart.
+
+\section{Implementation}
+Explain which algorithms we used or what algorithms we wrote specifically for our project. Basically, speak of the code content in a comprehensive and appealing way.
+
+\section{Tests}
+Explain which tests we run and present our results (which will hopefully be outstanding). For both parts, images will be necessary: saved images from our part1 software and curves plotted throughout the second. (Additionally, for the second part, see if saving the weights computed for approximating an image is lighter than saving the image itself.)
+
+
+\section{Conclusion}
+Pyramid that contains a typical yet cool conclusion (yeah, we did this and that and it's working, time to celebrate!), draw actual conclusions from our results (i.e. are deeper networks experimentally truly better than shallow ones as our intuition suggested? how and why?) and suggests improvements that could be made over what we already did. Future work should also be mentioned.
+
+\bibliographystyle{plain}
+\bibliography{bibTRP}
+
+\end{document}
