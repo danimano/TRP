@@ -11,7 +11,7 @@
 
 %% Useful packages
 \usepackage{natbib}
-\usepackage{graphicx}
+\usepackage{graphicx} 
 \usepackage{listings}
 \usepackage{color}
 \usepackage{amsmath}
@@ -21,8 +21,8 @@
 \usepackage[numbib]{tocbibind}
 \usepackage{hyperref}
 
-\title{Tutored Research Project II}
-\author{The Dream Team}
+\title{Tutored Research Project II (temporary title)}
+\author{Candice Bentéjac, Anna Csörgő, Dániel Hajtó}
 
 \begin{document}
 \maketitle
@@ -36,15 +36,70 @@ Upside-down pyramid which contains a description of our domain (deep neural netw
 
 \section{State-of-the-art / Existing solutions}
 If relevant, can be a synthesis of the work done in Madrid but it seems like it won't be the case. For the state-of-the-art and existing solutions:
+
+
 - for the visualization part, there are not really existing solutions to the precise things we want to achieve, but the TensorFlow Playground is already a good and interesting neural network visualization tool that might be worth mentioning.
+
+
 - for the intuition part (deeper networks crush shallow networks), mention paper \citep{Mhaskar17}, do some other research.
 
 
 \section{Software requirements}
-\subsection{Needs (functional / non-functional needs)}
-Function and non-functional needs for both of our tasks.
-\subsection{Constraints}
-Constraints for both of our tasks.
+\paragraph{}Our research project is divided into two main parts. The first one consists in building a library that could be used by anyone willing to work with neural networks and improve their network optimization phase. Additionally, we will develop a program using that library that allows a user to visualize the organization of an input network as well as its decision boundaries. The second part consists in checking experimentally whether small and deep networks tend to generalize better than large and shallow ones. In order to do this, we will build different networks and evaluate their ability to approximate greyscale images of various difficulties. We will then build plots out of our test results to analyze them and assess our intuition.
+
+\paragraph{}In this section, we will present our requirements, listing for each part of our project the constraints, the functional needs, and the non-functional needs. 
+
+\subsection{Part I}
+\subsubsection{Constraints}
+\begin{itemize}
+\item The library and the program will both be developed using Python.
+\item The networks involved should only use the ReLU operator. 
+\item The program should only take as an input a network and its parameters saved in a TensorFlow file.
+\item The program should display all the layers of the network with different colors.
+\end{itemize}
+
+\subsubsection{Needs}
+\noindent\textbf{Functional needs}
+\begin{itemize}
+\item The library should be able to be called by a user building their own networks and trying to optimize them.
+\item The program should have a graphical user interface (GUI).
+\item The program should display the network, given as an input by the user, by drawing all its decision boundaries for all neurons, on all layers. 
+\item The program should be able to display all the layers and neurons at the same time if requested by the user, no matter how big the input network is.
+\item The user should be able to choose which layer are being displayed by the program. 
+\item The user should be able to save the network visualization displayed by the program as a .jpg image.
+\item The user should be able to choose which part of the plane shown by the program they want to see and change it as they want. By default, the region of the plane to be shown will be set automatically. 
+
+\end{itemize}
+\noindent\textbf{Non-functional needs}
+\begin{itemize}
+\item For each region displayed by the program, the slope of the visible decision boundaries should also be displayed.
+\end{itemize}
+
+\subsection{Part II}
+\subsubsection{Constraints}
+\begin{itemize}
+\item The experiments should be developed and run using Python.
+\item All the neural networks built for the experiments should be created and used with TensorFlow.
+\item All the images used for our experiments should be of a format that can be handled by TensorFlow neural network. 
+\item All plots should be plotted using Matplotlib.
+\item Only greyscale images should be used as inputs for our experiments.
+\item The images used as inputs for our experiments should be of different types and difficulties: synthetic simple images (such as a black square on a white background), synthetic images with noise, synthetic textures, and real images.
+\item The method of least squares should be used to evaluate the networks' abilities to approximate the input images.
+\item A single network should be used for a single image.
+\end{itemize}
+
+\subsubsection{Needs}
+\noindent\textbf{Functional needs}
+\begin{itemize}
+\item Neural networks should be created, trained on images, and their ability of approximating those images should be assessed. 
+\item A parameter should determine how many percents of the input image's pixels will be used for the training phase.
+\item 100\% of the input image's pixels should be used during the testing phase.
+\item The input of a neural network should be the location of an input image's pixel.
+\item For one experiment with a given input, the same number of parameters should be used for all the networks. Only the structure of the networks should vary.
+\item The generated plots should be the curves of the least square error (on the $y$ axis) depending on the number of layers and the total number of parameters (on the $x$ axis). A curve should correspond to a specific number of layers.
+\item On every plot, each point in the curve should be an average over several trials using different training sets.
+
+\end{itemize}
 
 \section{Software architecture}
 (ULM schemes), how our software is organized, what our modules are. Also insert a magnificently beautiful Gantt chart.
