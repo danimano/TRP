@@ -32,7 +32,24 @@ Spoiler-free abstract that makes you want to read the next X pages of whatever w
 \end{abstract}
 
 \section{Introduction}
-Upside-down pyramid which contains a description of our domain (deep neural networks), presents our topic (visualization of networks and intuition that deeper networks generalize better than large and shallow ones. Present our outline in a fancy and exciting way.
+%%% Upside-down pyramid which contains a description of our domain (deep neural networks), presents our topic (visualization of networks and intuition that deeper networks generalize better than large and shallow ones. Present our outline in a fancy and exciting way.
+
+% Description of the domain ----- NEEDS TO BE IMPROVED AND BACKED UP WITH REFERENCES
+\paragraph{}Deep Neural Networks, a recent branch of machine learning, are computational models that are based on the neural networks present in living organisms' brains. Not only do those neural networks allow us to process information, but they also make us able to learn, an ability computers are lacking of. Indeed, unlike the brain as a biological neural network which can reorganize itself and learn to compensate errors, computers are dependent on us to formulate problems as algorithms before being able to solve them. However, there are problems that cannot be formulated as algorithms, causing computers to fail where a human brain would succeed.
+
+\paragraph{}Deep Neural Networks are aiming at allowing, abstractly speaking, a computer to learn by itself, as our brain would. They do not need to be explicitly programmed: they are able to learn from training examples. More precisely, they are able, after a successful training, to generalize a problem and associate data by themselves, without further human intervention. This allows Deep Neural Networks to solve problems where other models are struggling or failing.
+
+
+\paragraph{}These models have generated a great excitement in the domain of machine learning over the past few years because of the many breakthroughs they led to in domains like computer vision or speech recognition. If Deep Neural Networks have proven themselves to be an efficient way to solve problems, we are yet unable to understand and predict how they map and tune their parameters because of the infinite number of possibilities.
+
+% Presentation of our topic
+\paragraph{}In this report of our Tutored Research Project, we focus on two specific concerns that the study of Deep Neural Networks is raising. The first one is about the networks' visualization: in order to better understand how the Deep Neural Networks are optimizing themselves, we might want to gain insights from a direct visualization of the decisions that the networks are taking. To that effect, we built a library that offers its users to precisely visualize the decision boundaries that a given network is determining for each of its layers. The second of our concerns regards the type of network that has the best ability to approximate functions. We thus made a comparison between two different types of network's structures: a shallow one and a deep one. Putting them through the same training and testing conditions, we attempted to draw a general conclusion based on our results about which type network would be, generally speaking, more adapted to problem solving. 
+
+% Outline
+\paragraph{}To start with, we will thus review the already existing visualization solutions as well as the studies that have been conducted on the correlation between a network's structure and its ability to generalize. The following section will be dedicated to describing the requirements we had to follow for both of our tasks, before describing the software architecture of our library. We will then comment our implementation and finally, present the tests we ran and the results they produced.
+
+
+
 
 \section{State-of-the-art / Existing solutions}
 If relevant, can be a synthesis of the work done in Madrid but it seems like it won't be the case. For the state-of-the-art and existing solutions:
