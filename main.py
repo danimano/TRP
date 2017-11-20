@@ -147,7 +147,7 @@ with tf.Session() as sess:
             #Y.putdata(YY, scale=13.0, offset=0.0)
             #tmp = np.subtract(asd2, YY.transpose())
             res = np.array(YY.reshape([X.size[0], X.size[1]]).transpose())
-            e = np.array(np.subtract(res, asd2.reshape([X.size[0], X.size[1]])))
+            e = np.array(np.subtract(res, asd2.reshape([X.size[1], X.size[0]])))
             c1 = -1*(e/abs(e+1e-8))*np.exp2(np.maximum(np.minimum(np.round(np.log2(abs(e+1e-8)/8)), 3), 0))*8
             c2 = -1*(e/abs(e+1e-8))*(np.maximum(np.minimum(np.round(np.sqrt(abs(e+1e-8)/14.2222)), 3), 0)**2)*14.2222
             #c2 = -1*(e/abs(e+1e-8))*(np.minimum(np.round(np.sqrt(abs(e+1e-8)/2.5)), 7)**2)*2.5
