@@ -20,30 +20,35 @@
 \usepackage{upgreek}
 \usepackage[numbib]{tocbibind}
 \usepackage{hyperref}
+\usepackage[font=sc]{caption}
+\usepackage[justification=centering]{caption}
 
-\title{Tutored Research Project II (temporary title)}
-\author{Candice Bentéjac, Anna Csörgő, Dániel Hajtó}
+\title{Deep Neural Networks: A Visualization and Comparison with Shallow Neural Networks\\ \large Tutored Research Project II}
+\author{Candice Bent\'ejac, Anna Cs\"org\H o, D\'aniel Hajt\'o}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Spoiler-free abstract that makes you want to read the next X pages of whatever we are going to say.
+This report presents our work our Tutored Research Project on Deep Neural Networks. We try to get a better understanding of how neural networks are mapping and tuning their parameters through the visualization of their decision boundaries, layer by layer. For this purpose, we develop a Python library that allows such a visualization. We also try to determine, through experiments, if deep networks are, as the recent works lead us to think, indeed better at problem solving than shallow ones by approximating grayscale images. 
 \end{abstract}
 
 \section{Introduction}
 %%% Upside-down pyramid which contains a description of our domain (deep neural networks), presents our topic (visualization of networks and intuition that deeper networks generalize better than large and shallow ones. Present our outline in a fancy and exciting way.
 
-% Description of the domain ----- NEEDS TO BE IMPROVED AND BACKED UP WITH REFERENCES
-\paragraph{}Deep Neural Networks, a recent branch of machine learning, are computational models that are based on the neural networks present in living organisms' brains. Not only do those neural networks allow us to process information, but they also make us able to learn, an ability computers are lacking of. Indeed, unlike the brain as a biological neural network which can reorganize itself and learn to compensate errors, computers are dependent on us to formulate problems as algorithms before being able to solve them. However, there are problems that cannot be formulated as algorithms, causing computers to fail where a human brain would succeed.
+% Description of the domain
+\paragraph{}Neural Networks, or more properly, Artificial Neural Networks (ANN), are computational models that are loosely based on the neural networks that can be found in mammals' brains. Not only do those natural neural networks allow us to process information, but they also make us able to learn, an ability computers are lacking of. Indeed, unlike the brain as a biological neural network that can reorganize itself and learn to compensate errors, computers are dependent on us to formulate problems as algorithms before being able to solve them. However, we are not able to  formulate any problem as an algorithm, especially problems depending on many variables. This causes computers to fail solving some problems where a human brain would succeed. \citep{Krose1996}
 
-\paragraph{}Deep Neural Networks are aiming at allowing, abstractly speaking, a computer to learn by itself, as our brain would. They do not need to be explicitly programmed: they are able to learn from training examples. More precisely, they are able, after a successful training, to generalize a problem and associate data by themselves, without further human intervention. This allows Deep Neural Networks to solve problems where other models are struggling or failing.
+\paragraph{}ANN are thus trying to mimic, on a smaller scale, the behavior of the mammalian brain when facing a problem. They are aiming at allowing, abstractly speaking, a computer to learn by itself, as our brain would. They do not need to be explicitly programmed: they are able to learn from training examples. More precisely, they are able, after a successful training, to generalize a problem and associate data by themselves, without further human intervention. This allows ANN to solve problems where other computational models are struggling or failing.
 
+\paragraph{}ANN are typically constituted of layers, which themselves consist in interconnected nodes, often designated as "neurons". The input to an ANN is presented to the input layer, which then communicate with one or more hidden layers. The real processing of the input happens within those hidden layers, where all the computations are done. The hidden layers finally communicate the result of their computation to the output layer, which will return it. \citep{Kriesel}
 
-\paragraph{}These models have generated a great excitement in the domain of machine learning over the past few years because of the many breakthroughs they led to in domains like computer vision or speech recognition. If Deep Neural Networks have proven themselves to be an efficient way to solve problems, we are yet unable to understand and predict how they map and tune their parameters because of the infinite number of possibilities.
+\paragraph{}There are different types of ANN, but the ones that generated the most excitement recently are Deep Neural Networks (DNN), which are ANN with many hidden layers. DNN even led to the creation of a new branch of machine learning: deep learning. Thanks to deep learning, many breakthroughs have been made in domains such as computer vision or speech recognition, which explains the keen interest people have developed for it.
+
+\paragraph{}If DNN, and more generally ANN, have proven themselves to be an efficient model to solve problems, they are yet still behaving as black boxes. We are able to understand the mathematics behind ANN, but fail to predict how the networks map and tune their parameters because of the infinite number of possibilities. 
 
 % Presentation of our topic
-\paragraph{}In this report of our Tutored Research Project, we focus on two specific concerns that the study of Deep Neural Networks is raising. The first one is about the networks' visualization: in order to better understand how the Deep Neural Networks are optimizing themselves, we might want to gain insights from a direct visualization of the decisions that the networks are taking. To that effect, we will build a library that offers its users to precisely visualize the decision boundaries that a given network is determining for each of its layers. The second of our concerns regards the type of network that has the best ability to approximate functions. We thus will make a comparison between two different types of network's structures: a shallow one and a deep one. Putting them through the same training and testing conditions, we will attempt to draw a general conclusion based on our results about which type network would be, generally speaking, more adapted to problem solving. 
+\paragraph{}In this report of our Tutored Research Project, we focus on two specific concerns that the study of ANN is raising. The first one is about the networks' visualization: in order to better understand how the ANN are optimizing themselves, we might want to gain insights from a direct visualization of the decisions that the networks are taking. To that effect, we will build a library that allows its users to precisely visualize the decision boundaries that a given network is determining for each of its layers. The second of our concerns regards the type of network that has the best ability to approximate functions. We thus will make a comparison between two different types of network's structures: a shallow one (regular ANN) and a deep one (DNN). Putting them through the same training and testing conditions, we will attempt to approximate grayscale images of different difficulties (synthetic images, synthetic textures and real images) and try to draw a general conclusion based on our results about which network's structure seems to be more adapted to problem solving.
 
 % Outline
 \paragraph{}To start with, we will therefore review the already existing visualization solutions as well as the studies that have been conducted on the correlation between a network's structure and its ability to generalize. The following section will be dedicated to describing the requirements we had to follow for both of our tasks, before describing the software architecture of our library. We will then comment our implementation and finally, present the tests we ran and the results they produced.
@@ -55,34 +60,32 @@ Spoiler-free abstract that makes you want to read the next X pages of whatever w
 % Can be a synthesis of the work done in Madrid but irrelevant in our case. 
 %- for the visualization part, there are not really existing solutions to the precise things we want to achieve, but the TensorFlow Playground is already a good and interesting neural network visualization tool that might be worth mentioning.
 
-%- for the intuition part (deeper networks crush shallow networks), mention paper \citep{Mhaskar17}, do some other research.
-\paragraph{}The problems of visualization and structure of Deep Neural Networks have already been studied. When reading articles on Deep Neural Networks, we however noticed that those specifically points had not been widely covered and that many of the articles on them had been written by the same group of people. In this context, our own work on those aspects of neural networks is relevant, since its intent is to complete what has already been uncovered rather than just presenting it in another way. 
+\paragraph{}The questions of visualization and ANN's structure we stated earlier have already been studied. We however noticed that those specific points had not been widely covered: we could not find any work addressing the problem of visualization the way we do, and the comparisons of deep and shallow networks we read about were mostly written by the same researchers. In this context, our own work becomes relevant, since its intent is to hopefully complete what has already been uncovered rather than presenting it in another way.
 
 \paragraph{}Throughout this section, we will thus present the already existing solutions to the visualization and structure problems, starting with the visualization methods for Deep Neural Networks before speaking of the different comparisons that have been already made between deep and shallow networks.  
 
 
 \subsection{Visualization of Deep Neural Networks}
-\paragraph{}Visualization methods for Deep Neural Networks are relevant, since they might help us getting a better understanding of how the networks are operating and what makes them such powerful models. Obtaining this knowledge is important for various reasons. One of the most important is that, so far, trial-and-error is the main way to find the best set of parameters when training a Deep Neural Network. Besides being time-consuming, it results in networks having thousands or millions of parameters, which only makes it harder to improve them. Indeed, the higher the number of parameters, the harder it gets to find the strengths and weaknesses of the networks. Understanding how the networks are actually learning is thus necessary to improve the training phase of the networks and, by extension, improve networks which have already, through trial-and-error, proven themselves to be successful.
+\paragraph{}Visualization methods for DNN, and more generally ANN, are relevant, since they might help us getting a better understanding of how the networks are operating and adapting, and what makes them such powerful models. Obtaining this knowledge is important for various reasons. One of the most important is that, so far, trial-and-error is the main way to find the best set of parameters when training an ANN. Besides being time-consuming, it results in networks having thousands or millions of parameters, which only makes it harder to improve them. Indeed, the higher the number of parameters, the harder it gets to find the strengths and weaknesses of the networks. Understanding how the networks are actually learning is thus necessary to improve their training phase and, by extension, improve networks which have already, through trial-and-error, proven themselves to be successful.
 
-\paragraph{}In this context, \citep{ZintgrafICLR2017} and \citep{Zintgraf2017} present a recent method to visualize the response of a Deep Neural Network to a specific input. For example, when inputting an image, the method will highlight the areas of the image that provide information in favor of or against a certain class. This type of visualization leads to a better understanding of the classification process which the neural network goes through, and how and why a class is chosen rather than another. 
+\paragraph{}In this context, \citep{ZintgrafICLR2017} and \citep{Zintgraf2017} present a recent method to visualize the response of a DNN to a specific input. For example, when inputting an image, the method will highlight the areas of the image that provide information in favor of or against a certain class. This type of visualization leads to a better understanding of the classification process which the neural network goes through, and how and why a class is chosen rather than another. 
 
-\paragraph{}Another approach to visualize Deep Neural Networks is to focus on the notion of a class, that is to say, what a network understands to be a class. For a given class, it consists in finding an input that will maximize this given class. We can then visualize what the network is looking for in the image to classify it, and thus have an idea of what specifically triggers the network when attempting to classify. \citep{Simonyan2014} use this approach to develop two visualization techniques. The first one visualizes the notion of the class that a convolutional network has by generating an image that maximizes the class score for a given class. The second one is an image-specific class saliency visualization that computes the given class saliency map by ranking the input features, depending on their influence over the given class. \citep{Yosinski2015} also introduce two visualization techniques. One visualizes the activations that are made by a convolutional network as it processes an image or a video, which allows to gain valuable insights on how convolutional networks work. The other consists in visualizing the features at each layer of a Deep Neural Network. To this end, it performs regularized optimization in the image space.
+\paragraph{}Another approach to visualize Deep Neural Networks is to focus on the notion of a class, that is to say, what a network understands to be a class. For a given class, it consists in finding an input that will maximize this given class. We can then visualize what the network is looking for in an image to then classify it, and thus have an idea of what specifically triggers the network when attempting to classify. \citep{Simonyan2014} use this approach to develop two visualization techniques for Convolutional Neural Networks (CNN). The first one visualizes the notion of the class that a CNN has by generating an image that maximizes the class score for a given class. The second one is an image-specific class saliency visualization that computes the given class saliency map by ranking the input features, depending on their influence over the given class. \citep{Yosinski2015} also introduce two visualization techniques. One visualizes the activations that are made by a CNN as it processes an image or a video, which allows to gain valuable insights on those networks work. The other consists in visualizing the features at each layer of a DNN. To this end, it performs regularized optimization in the image space.
 
-\paragraph{}It seems also important to note that there are very few accessible visualization tools available on-line for a large public that does not necessarily have a great knowledge about Deep Neural Networks. One worth mentioning for people willing to familiarize themselves with Deep Neural Networks and others willing to play around with them is the TensorFlow Playground \citep{TFPlayground}. It allows the user to choose between simple datasets, select how many hidden layers and neurons they want to use, and to set several parameters, including the activation function and the learning rate. Once all the parameters have been set, the Playground displays the network's output for each epoch and lets the user visualize the output of each neuron on each layer.
+\paragraph{}It seems also important to note that there are very few accessible visualization tools available on-line for a large public that does not necessarily have a great knowledge about Deep Neural Networks. One tool worth mentioning for people willing to familiarize themselves with ANN and others willing to play around with them is the TensorFlow Playground \citep{TFPlayground}. It allows the user to choose between simple datasets, select how many hidden layers and neurons they want to use, and to set several parameters, including the activation function and the learning rate. Once all the parameters have been set, the Playground displays the network's output for each epoch and lets the user visualize the output of each neuron on each layer.
 
 \subsection{Comparison between deep and shallow networks}
-\paragraph{}The depth of Deep Neural Networks has greatly evolved over the past few years. The now well-known AlexNet \citep{Krizhevsky2017} won the 2012 ILSVRC (ImageNet Large-Scale Visual Recognition Challenge) with 7 hidden layers, outperforming by more than 10 percent the other contestants. In 2015, Microsoft ResNet \citep{He2016} won the ILSVRC using 152 layers. Between 2012 and 2015, the winners of each ILSVRC (ZF Net \citep{Zeiler2014}, VGG Net \citep{Simonyan2015} and GoogLeNet \citep{Szegedy2015}) used networks with an increasing number of layers, always achieving better results than those from the previous years. This suggests that deep networks are, at least in the context of image recognition, better than shallow ones and that, the more layers a network has, the better it will perform. 
+\paragraph{}The depth of DNN has greatly evolved over the past few years. The now well-known AlexNet \citep{Krizhevsky2017} won the 2012 ILSVRC (ImageNet Large-Scale Visual Recognition Challenge) with 7 hidden layers, outperforming by more than 10 percent the other contestants. In 2015, Microsoft ResNet \citep{He2016} won the ILSVRC using 152 layers. Between 2012 and 2015, the winners of each ILSVRC (ZF Net \citep{Zeiler2014} (winner in 2013), VGG Net \citep{Simonyan2015} (runner-up in 2014) and GoogLeNet \citep{Szegedy2015} (winner in 2014)) used networks with an increasing number of layers, always achieving better results than those from the previous years. This suggests that deep networks are, at least in the context of image recognition, better than shallow ones and that, the more layers a network has, the better it will perform. 
 
-\paragraph{}\citep{Zagoruyko2016} however show that a deep residual network with "only" 16 layers can outperform all the previous residual networks, even those having a thousand of layers, both in accuracy and efficiency. This indicates that although a deep network seems to perform better than a shallow one, the performance is not determined by the number of layers itself.
+\paragraph{}\citep{Zagoruyko2016} however shows that a deep residual network with "only" 16 layers can outperform all the previous residual networks, even those having a thousand of layers, both in accuracy and efficiency. This indicates that although a deep network seems to perform better than a shallow one, the performance is not determined by the number of layers itself.
 
-\paragraph{}Furthermore, \citep{Mhaskar2016} and \citep{Mhaskar2016May} show that a shallow network and a deep network can approximate the class of compositional functions with the same accuracy. However, a deep network will achieve such a result with an exponentially lower number of training parameters and a lower VC-dimension. 
-% VC-space = measure of the capacity of a space of functions that can be learned by a statistical classification algorithm; it is defined as the cardinality of the largest set of points that the algorithm can shatter
+\paragraph{}Furthermore, \citep{Mhaskar2016} and \citep{Mhaskar2016May} show that a shallow network and a deep network can approximate the class of compositional functions with the same accuracy. However, a deep network will achieve such a result with an exponentially lower number of training parameters and a lower VC-dimension (given a space of functions that can be learned by a statistical classification algorithm, the VC-space measures that space and consists in the cardinality of the largest set of points that the algorithm can shatter). % reformulate the definition of VC-space: might be too close to the wikipedia one 
 \citep{Poggio2017} and \citep{Mhaskar17} further discuss when and under which conditions learning with deep networks can be exponentially better than learning with shallow ones. 
 
 \paragraph{}They state that both shallow and deep networks are universal and can thus approximate arbitrarily well any continuous functions on a compact domain (universal approximation theorem) and consider a class of functions on a compact domain that is a hierarchical composition of local functions. When approximating those functions with a compositional structure, deep networks can represent compositionality in their architecture whereas shallow networks cannot do so and thus do not have any structural information on the function to be learned. Moreover, deep networks are able to exploit the special structure of compositional functions in their architecture when shallow networks are plainly blind to it. It is also not a requirement for the deep networks to have the same compositional architecture as the compositional functions to be approximated: the acyclic graph representing the structure of the function only needs to be a subgraph of the graph representing the deep networks' structure.
 
 \section{Software requirements}
-\paragraph{}Our research project is divided into two main parts. The first one consists in building a library that could be used by anyone willing to work with neural networks and to improve their network during their optimization phase. In order to do that, the library will allow the user to visualize the neural network's decision boundaries. Additionally, we will develop a program using that library that lets the user give a file containing a network's parameters as an input, and draws its decision boundaries as a means of visualization of its organization. The second part consists in checking experimentally whether small and deep networks tend to generalize better than large and shallow ones. For this, we will build different networks and evaluate their ability to approximate greyscale images of various difficulties. We will then build plots out of our test results to analyze them and assess our intuition.
+\paragraph{}Our research project is divided into two main parts. The first one consists in building a library that could be used by anyone willing to work with neural networks and to improve their network during their optimization phase. In order to do that, the library will allow the user to visualize the neural network's decision boundaries. Additionally, we will develop a program using that library that lets the user give a file containing a network's parameters as an input, and draws its decision boundaries as a means of visualization of its organization. The second part consists in checking experimentally whether small and deep networks tend to generalize better than large and shallow ones. For this, we will build different networks and evaluate their ability to approximate grayscale images of various difficulties. We will then build plots out of our test results to analyze them and assess our intuition.
 
 \paragraph{}In this section, we will present our requirements, listing for each part of our project the constraints, the functional needs, and the non-functional needs. 
 
@@ -90,7 +93,7 @@ Spoiler-free abstract that makes you want to read the next X pages of whatever w
 \subsubsection{Constraints}
 \begin{itemize}
 \item The library and the program will both be developed using Python.
-\item The networks involved should only use the ReLU operator. 
+\item The networks involved should only use the Rectified Linear Unit (ReLU) operator. 
 \item The program should only take as an input a network and its parameters saved in a TensorFlow file.
 \item The program should display all the layers of the network with different colors.
 \end{itemize}
@@ -122,6 +125,7 @@ Spoiler-free abstract that makes you want to read the next X pages of whatever w
 \item Only greyscale images should be used as inputs for our experiments.
 \item The images used as inputs for our experiments should be of different types and difficulties: synthetic simple images (such as a black square on a white background), synthetic images with noise, synthetic textures, and real images.
 \item The method of least squares should be used to evaluate the networks' abilities to approximate the input images.
+\item The smooth L1 norm should be used as the loss function to evaluate the networks' abilities to approximate the input images.
 \item A single network should be used for a single image.
 \end{itemize}
 
@@ -139,14 +143,119 @@ Spoiler-free abstract that makes you want to read the next X pages of whatever w
 \end{itemize}
 
 \section{Software architecture}
-(ULM schemes), how our software is organized, what our modules are. Also insert a magnificently beautiful Gantt chart.
+%(ULM schemes), how our software is organized, what our modules are. Also insert a magnificently beautiful Gantt chart.
+\paragraph{}Our work spanned over several weeks. The way we distributed and organized it is shown in the Gantt chart of Figure XX. (Insert beautiful updated Gantt chart here -- see how to split it so that the X pages remain readable on a figure) Within this section, we will dive into the architecture of our project, and more specifically, of our ANN visualization library. The comparison we made between the deep and the shallow networks is based on experiments and analysis of their results only, which means that it does not have a dedicated software architecture. We will however briefly mention its organization.
+
+\subsection{Visualization library}
+Draft of a draft: the modules we have defined so far will very likely change over the course of the next few weeks...
+\paragraph{}The library aimed at ANN visualization we wrote obeys to the rules of modular programming. It is consequently constituted of different modules which have specific goals. (Insert ULM scheme here) It relies on three main modules: the input/output module, the computation module and the display module.
+\begin{itemize}
+\item The input/output module handles exclusively what the user gives as an input (TensorFlow files) and what the user receives as an output (the visualized input network, or the computations made on every layer to obtain the decision boundaries). It focuses on reading and parsing the input TensorFlow files before transmitting them to the computation module. The computation or the display module, depending on what use the user wants to make of the library, will then send the output back to it.
+\item The computation module aims at applying the non-linearity operator (in our case, ReLU) to all neurons and then compute the output of the layers for all the possible inputs. Depending on what the user wants, it the gives the output back to the input/output module, or send it to the display module to get a visualization of it.
+\item The display module is in charge of the drawing of the decision boundaries for each layer. Given the results computed by the computation module, it draws the decision lines accordingly for the requested layers. It then transmits the created image to the input/output image. 
+\end{itemize}
+The executable uses all of these modules within a graphical user interface.
+
+
+\subsection{Comparison between deep and shallow networks}
+\paragraph{}This part of our work being test-driven, we organized it according to our test images. We used three categories of images (synthetic images, synthetic textures and real-world images) and for each image, we used dedicated weights on a deep and on a shallow network. To be deepened and better formulated...
+
 
 \section{Implementation}
-Explain which algorithms we used or what algorithms we wrote specifically for our project. Basically, speak of the code content in a comprehensive and appealing way.
+%Explain which algorithms we used or what algorithms we wrote specifically for our project. Basically, speak of the code content in a comprehensive and appealing way.
+\paragraph{}In this section, we go into the implementation details of both the library (and the executable) and the tests used to compare deep networks with their shallow counterparts. We developed them using Python only, associated to Google's TensorFlow library, and "library\_name" for the graphical user interface.
 
-\section{Tests}
-Explain which tests we run and present our results (which will hopefully be outstanding). For both parts, images will be necessary: saved images from our part1 software and curves plotted throughout the second. (Additionally, for the second part, see if saving the weights computed for approximating an image is lighter than saving the image itself.)
+\subsection{Visualization library}
+\paragraph{}For the implementation of the library to be clearer, we will go through each module's implementation individually.
 
+\subsubsection{Input/output module}
+\paragraph{}The library resorts to TensorFlow in this module only. Indeed, the files that can be given as an input are TensorFlow files, which are binary files, and require the use of the external library to be read. Out of these binary files, we extract the parameters and returns them to the computation module, which will proceed to all the necessary calculations.
+
+\subsubsection{Computation module}
+\paragraph{}The computation module consists in two main tasks: applying the non-linearity operator, which we chose to be the rectified linear unit (ReLU), and computing the decisions made by the network for every layer that is asked by the user.
+
+\paragraph{}Description of ReLU ($0$ if $h <= 0$, $h$ if $h > 0$) and of how the output of a layer is computed, given the weights and bias of it (and of the previous layers).
+
+\subsubsection{Display module}
+\paragraph{}Description of how the drawing of the lines is implemented (using Matplotlib), and how we handle the change of position on the plane (especially translations and zooms, if we keep them in here).
+
+\subsubsection{Executable}
+\paragraph{}Basically, library wrapped up in a nice GUI. Mention which library was used for the GUI (Tkinter?) and definitely find a name for OUR library because there are too many libraries mentioned, the word "library" is over-used and it's getting confusing.
+
+
+\subsection{Comparison between deep and shallow networks}
+\paragraph{}Unlike our library which only uses it partially, the comparison between the two ANN's structures fully relies on TensorFlow. Using this external library, we manually create different networks, shallow and deep, and initialize their weights and bias for each created hidden layers. 
+
+\paragraph{}D\'aniel: the rest will probably be more understandable if you directly write it, unless you make your code more readable for us (and then I could write it while you focus on showcasing your results).
+
+
+\section{Tests (Draft)}
+%Explain which tests we run and present our results (which will hopefully be outstanding). For both parts, images will be necessary: saved images from our part1 software and curves plotted throughout the second. (Additionally, for the second part, see if saving the weights computed for approximating an image is lighter than saving the image itself.)
+\paragraph{}Now that the architecture we used and the implementation we made have been explained, we will present the tests we put our library through, and the ones we did to figure out whether deep networks are indeed generally better than shallow networks.
+
+
+\subsection{Visualization library}
+\paragraph{}TBD
+
+\subsection{Application: Image approximator}
+
+(Right now, I'm writing about the deep network. I will extend this to a comparison with shallow networks later.)
+
+(Note for myself: table with MSE results for every image!!! (That's the point of this whole section.))
+
+The test images were divided into 3 classes.
+\begin{enumerate}
+\item Synthetic images with clear borders.
+\item Synthetic images with noise or fuzzy borders and texture images.
+\item Real-world images.
+\end{enumerate}
+
+\subsubsection{Synthetic images}
+
+\paragraph{}As expected, a reasonably large network easily learns simple synthetic images. On Figure~\ref{fig:circ2}, its performance can be seen.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{circ2.png}
+\includegraphics[width=0.3\textwidth]{circ2e.png}
+\includegraphics[width=0.3\textwidth]{circ2o.png}
+\caption{\label{fig:circ2}Synthetic image result. The left image is the original, the middle one is the squared error and the right one is the output of the network.}
+\end{figure}
+
+\subsubsection{Texture images}
+
+\paragraph{}This is a more interesting case. Because of its repetitive behavior, it contains less information than a general real-world image. Yet, because of its inner structure, the network fails to grasp this repetition and still tries to approximate areas independently. 
+
+\paragraph{}On Figure~\ref{fig:wood} we can see an acceptable performance. On the right side of the image, the network was able to recognize the wooden pattern, but on its left side, where high frequencies are dominating, it cannot do anything.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{wood.jpg}
+\includegraphics[width=0.3\textwidth]{woodo.png}
+\caption{\label{fig:wood}On this result, we can clearly see how miserably the network is failing to approximate the high frequency parts of the image.}
+\end{figure}
+
+\paragraph{}On Figure~\ref{fig:steel}, we can see a bad performance. The networks' only real achievement is the approximation of the lighting, the background of the image is darker in the upper right corner and lighter in the lower left. We can see, that it tried to do something with the "real information", but again, could not grasp its pattern, only some parts of it. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{steel.jpeg}
+\includegraphics[width=0.3\textwidth]{steelo.png}
+\caption{\label{fig:steel}On this result, we can clearly see how miserably the network is failing to approximate the high frequency parts of the image.}
+\end{figure}
+
+\paragraph{}On Figure~\ref{fig:pebbles} we can see nothing. The network could not find any areas, which is worth to care about it. The image is quite random indeed, but there are patterns in it. For the network, the biggest problem was probably the too small surfaces of the similar color regions.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{pebbles.jpeg}
+\includegraphics[width=0.3\textwidth]{pebbleso.png}
+\caption{\label{fig:pebbles}On this result we can clearly see how miserably fail the network to approximate the high frequency parts of the image.}
+\end{figure}
+
+\subsubsection{Real world images}
+
+\paragraph{}The real question is: how well does it perform for natural images? And the answer is: it depends on the image. As we saw earlier, the network can only draw lines. If there are large similar colored regions, it gives much better results.
 
 \section{Conclusion}
 Pyramid that contains a typical yet cool conclusion (yeah, we did this and that and it's working, time to celebrate!), draw actual conclusions from our results (i.e. are deeper networks experimentally truly better than shallow ones as our intuition suggested? how and why?) and suggests improvements that could be made over what we already did. Future work should also be mentioned.
