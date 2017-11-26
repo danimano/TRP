@@ -21,20 +21,23 @@ def apply_nonlinearity(h):
 #                       TESTS                           #
 #########################################################
 
-#trial1 =  np.ones((3,3,3))
-#print(trial1)
-#nonl_trial1 = applyNonLinearity(trial1)
-#print(nonl_trial1)
+# # TEST 1
+# # Example with array containing positive numbers
+# trial1 =  np.ones((3,3,3))
+# print(trial1)
+# nonl_trial1 = applyNonLinearity(trial1)
+# print(nonl_trial1)
 
-
-trial2 = np.zeros((3,3,3))
-for i in range(0,3):
-    for j in range(0, 3):
-        for k in range(0, 3):
-            trial2[i][j][k] = i/2+j/3-k
-
-print('trial2:\n')
-print(trial2)
-apply_nonlinearity(trial2)
-print('\nAfter ReLU:\n')
-print(trial2)
+# # TEST 2
+# # Complicated example (positive and negative numbers as well)
+# trial2 = np.zeros((3,3,3))
+# for i in range(0,3):
+#     for j in range(0, 3):
+#         for k in range(0, 3):
+#             trial2[i][j][k] = i/2+j/3-k
+#
+# print('trial2:\n')
+# print(trial2)
+# apply_nonlinearity(trial2)
+# print('\nAfter ReLU:\n')
+# print(trial2)
