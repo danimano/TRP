@@ -1,49 +1,76 @@
+import settings
+from main_page import MainPage
+
 import tkinter as tk
+from tkinter import ttk
 from tkinter.messagebox import *
 
-class VisuGUI:
-    # Constructor of the GUI
-    def __init__(self, window):
-        # Initializing the main window, its title and its size
-        self.window = window
-        self.window.title("Wonderful Neural Network Visualization")
-        self.window.geometry("600x400")
+class VisuGUI(tk.Tk):
 
-        self.menubar = tk.Menu(self.window)
-        menu_file = tk.Menu(self.menubar, tearoff = 0)
-        menu_file.add_command(label = "Open TensorFlow file", command = self.helloMenu)
-        menu_file.add_command(label = "Save current visualization", command = self.helloMenu)
-        menu_file.add_separator()
-        menu_file.add_command(label = "Exit", command = self.quit)
-        self.menubar.add_cascade(label = "File", menu = menu_file)
-        self.window.config(menu = self.menubar)
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        settings.init()
 
-        # Random label
-        self.label = tk.Label(self.window, text = "This is the GUI where our NN visualization magic will happen!")
-        self.label.pack()
-        
-        # Random buttons doing simple actions
-        self.greet_button = tk.Button(self.window, text = "Hello", command = self.hello)
-        self.greet_button.pack(side = tk.LEFT)
-        self.close_button = tk.Button(self.window, text = "Close", command = self.quit)
-        self.close_button.pack(side = tk.RIGHT)
+        # Defining the title of the window, the size and the icon 
+        tk.Tk.title(self, "Wonderful Neural Network Visualization")
+        tk.Tk.minsize(self, width = 800, height = 600)
+        tk.Tk.iconbitmap(self, default = "icon.ico")
+        tk.Tk.columnconfigure(self, 0, weight = 1)
+        tk.Tk.rowconfigure(self, 0, weight = 1)
+
+        # Creating the container of the window
+        container = tk.Frame(self)
+        container.grid(row = 0, column = 0, stick = "nsew")
+        container.grid_rowconfigure(0, weight = 1)
+        container.grid_columnconfigure(0, weight = 1)
+
+        # Main menu handler
+        menubar  = tk.Menu(container)
+        filemenu = tk.Menu(menubar, tearoff = 0)
+        filemenu.add_command(label = "Open file", command = lambda:self.popupmsg("Not supported yet"))
+        filemenu.add_command(label = "Save figure", command = lambda:self.popupmsg("Not supported yet"))
+        filemenu.add_command(label = "Close file", command = lambda:self.popupmsg("Not supported yet"))
+        filemenu.add_separator()
+        filemenu.add_command(label = "Exit", command = self.quit)
+        menubar.add_cascade(label = "File", menu = filemenu)
+
+        tk.Tk.config(self, menu = menubar)
+
+        # Page handler
+        # It doesn't seem like we'll need several pages but if we do, the code is ready to handle it easily
+        self.frames = {}
+        for fr in (MainPage, MainPage):
+            frame = fr(container, self)
+            self.frames[fr] = frame
+            frame.grid(row = 0, column = 0, sticky = "nsew")
+            
+        self.show_frame(MainPage)
 
 
-    # Dummy functions to test displaying and make sure buttons/actions are working
-    def hello(self):
-        print("Hello!")
+    # Puts the frame we want to show on the top of the stack
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
 
-    def helloMenu(self):
-        print("Hello world!")
-        tk.messagebox.showinfo("Say Hello", "Hello World")
-
-    # Exit function (destroy the window) 
+    # Quits the program
     def quit(self):
-        self.window.destroy()
+        self.destroy()
 
-# If we are running this file, then we are launching the whole GUI
-if __name__ == '__main__':
-    root = tk.Tk()
-    main = VisuGUI(root)
-    # Main window's loop
-    root.mainloop()
+    def popupmsg(self, message):
+        popup = tk.Tk()
+
+        def leavemini():
+            popup.destroy()
+            
+        popup.wm_title("Popup!")
+        label = ttk.Label(popup, text = message, font = settings.FONT)
+        label.grid()
+        b1 = ttk.Button(popup, text = "Ok!", command = leavemini)
+        b1.grid()
+        popup.mainloop()
+   
+        
+
+if __name__ == "__main__":
+    app = VisuGUI()
+    app.mainloop()
