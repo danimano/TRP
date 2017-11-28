@@ -4,7 +4,7 @@ import tensorflow as tf
 from itertools import product
 
 ## Parameters #################################
-neuron_num = 64
+neuron_num = 17
 image_names = ["circ2.png", "fuzzy.jpeg", "cloud.jpeg", "wood.jpg", "lena.jpg", "cameraman.png", "baboon.jpeg"]
 learning_rate = 1e-3
 iter_num = 2e7
