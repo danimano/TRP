@@ -14,7 +14,7 @@ class VisuGUI(tk.Tk):
         # Defining the title of the window, the size and the icon 
         tk.Tk.title(self, "Wonderful Neural Network Visualization")
         tk.Tk.minsize(self, width = 800, height = 600)
-        tk.Tk.iconbitmap(self, default = "icon.ico")
+        tk.Tk.iconbitmap(self, default = settings.ICON)
         tk.Tk.columnconfigure(self, 0, weight = 1)
         tk.Tk.rowconfigure(self, 0, weight = 1)
 
@@ -24,25 +24,37 @@ class VisuGUI(tk.Tk):
         container.grid_rowconfigure(0, weight = 1)
         container.grid_columnconfigure(0, weight = 1)
 
-        # Main menu handler
-        menubar  = tk.Menu(container)
-        filemenu = tk.Menu(menubar, tearoff = 0)
-        filemenu.add_command(label = "Open file", command = lambda:self.popupmsg("Not supported yet"))
-        filemenu.add_command(label = "Save figure", command = lambda:self.popupmsg("Not supported yet"))
-        filemenu.add_command(label = "Close file", command = lambda:self.popupmsg("Not supported yet"))
-        filemenu.add_separator()
-        filemenu.add_command(label = "Exit", command = self.quit)
-        menubar.add_cascade(label = "File", menu = filemenu)
+        # MAIN MENU HANDLER
+        menu_bar  = tk.Menu(container)
+        file_menu = tk.Menu(menu_bar, tearoff = 0)
+        file_menu.add_command(label = "Open file", command = lambda:self.popupmsg("Not supported yet"))
+        file_menu.add_command(label = "Save figure", command = lambda:self.popupmsg("Not supported yet"))
+        file_menu.add_command(label = "Close file", command = lambda:self.popupmsg("Not supported yet"))
+        file_menu.add_separator()
+        file_menu.add_command(label = "Exit", command = self.quit)
+        menu_bar.add_cascade(label = "File", menu = file_menu)
 
-        tk.Tk.config(self, menu = menubar)
+        about_menu = tk.Menu(menu_bar, tearoff = 0)
+        about_menu.add_command(label = "Stuff", command = lambda:self.popupmsg("Stuff"))
+        about_menu.add_command(label = "Doc", command = lambda:self.popupmsg("Documentation!"))
+        menu_bar.add_cascade(label = "About", menu = about_menu)
 
-        # Page handler
-        # It doesn't seem like we'll need several pages but if we do, the code is ready to handle it easily
+        tk.Tk.config(self, menu = menu_bar)
+
+        # PAGE HANDLER (to handle different pages if required)
+        frames = list([MainPage])
         self.frames = {}
-        for fr in (MainPage, MainPage):
-            frame = fr(container, self)
-            self.frames[fr] = frame
+
+        # Handles the case where there is only one frame 
+        if len(frames) == 1:
+            frame = frames[0](container, self)
+            self.frames[frames[0]] = frame
             frame.grid(row = 0, column = 0, sticky = "nsew")
+        else:
+            for fr in frames:
+                frame = fr(container, self)
+                self.frames[fr] = frame
+                frame.grid(row = 0, column = 0, sticky = "nsew")
             
         self.show_frame(MainPage)
 
