@@ -60,31 +60,31 @@ h_lay1do = tf.nn.dropout(h_layer1, kp)
 x1 = h_lay1do
 
 # Second layer definition
-W_layer2 = weight_variable([neuron_num, np.floor(neuron_num/2)], 'W2')
-b_layer2 = bias_variable([np.floor(neuron_num/2)], 'b2')
+W_layer2 = weight_variable([neuron_num, int(neuron_num/2)], 'W2')
+b_layer2 = bias_variable([int(neuron_num/2)], 'b2')
 
 h_layer2 = tf.nn.relu(tf.matmul(x1, W_layer2) + b_layer2, name='h2')
 h_lay2do = tf.nn.dropout(h_layer2, kp)
 x2 = h_lay2do
 
 # Third layer definition
-W_layer3 = weight_variable([np.floor(neuron_num/2), np.floor(neuron_num/4)], 'W3')
-b_layer3 = bias_variable([np.floor(neuron_num/4)], 'b3')
+W_layer3 = weight_variable([int(neuron_num/2), int(neuron_num/4)], 'W3')
+b_layer3 = bias_variable([int(neuron_num/4)], 'b3')
 
 h_layer3 = tf.nn.relu(tf.matmul(x2, W_layer3) + b_layer3, name='h3')
 h_lay3do = tf.nn.dropout(h_layer3, kp)
 x3 = h_lay3do
 
 # Fourth layer definition
-W_layer4 = weight_variable([np.floor(neuron_num/4), np.floor(neuron_num/8)], 'W4')
-b_layer4 = bias_variable([np.floor(neuron_num/8)], 'b4')
+W_layer4 = weight_variable([int(neuron_num/4), int(neuron_num/8)], 'W4')
+b_layer4 = bias_variable([int(neuron_num/8)], 'b4')
 
 h_layer4 = tf.nn.relu(tf.matmul(x3, W_layer4) + b_layer4, name='h4')
 h_lay4do = tf.nn.dropout(h_layer4, kp)
 x4 = h_lay4do
 
 # Last layer definition
-W_layer5 = weight_variable([np.floor(neuron_num/8), output_num], 'W5')
+W_layer5 = weight_variable([int(neuron_num/8), output_num], 'W5')
 b_layer5 = tf.Variable(tf.constant(0.0, shape=[output_num], name='b5'))
 Y = tf.identity(tf.nn.sigmoid(tf.matmul(x4, W_layer5) + b_layer5)*255, name='y')
 

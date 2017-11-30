@@ -60,15 +60,15 @@ h_lay1do = tf.nn.dropout(h_layer1, kp)
 x1 = h_lay1do
 
 # Second layer definition
-W_layer2 = weight_variable([neuron_num, np.floor(neuron_num/2)], 'W2')
-b_layer2 = bias_variable([np.floor(neuron_num/2)], 'b2')
+W_layer2 = weight_variable([neuron_num, int(neuron_num/2)], 'W2')
+b_layer2 = bias_variable([int(neuron_num/2)], 'b2')
 
 h_layer2 = tf.nn.relu(tf.matmul(x1, W_layer2) + b_layer2, name='h2')
 h_lay2do = tf.nn.dropout(h_layer2, kp)
 x2 = h_lay2do
 
 # Last layer definition
-W_layer3 = weight_variable([np.floor(neuron_num/2), output_num], 'W3')
+W_layer3 = weight_variable([int(neuron_num/2), output_num], 'W3')
 b_layer3 = tf.Variable(tf.constant(0.0, shape=[output_num], name='b3'))
 Y = tf.identity(tf.nn.sigmoid(tf.matmul(x2, W_layer3) + b_layer3)*255, name='y')
 
