@@ -1,9 +1,12 @@
 import settings
-from main_page import MainPage
+import main_page as mp
+import interface as it
 
 import tkinter as tk
 from tkinter import ttk
-from tkinter.messagebox import *
+from tkinter import filedialog
+from matplotlib.figure import Figure
+
 
 class VisuGUI(tk.Tk):
 
@@ -24,27 +27,14 @@ class VisuGUI(tk.Tk):
         container.grid_rowconfigure(0, weight = 1)
         container.grid_columnconfigure(0, weight = 1)
 
-        # MAIN MENU HANDLER
-        menu_bar  = tk.Menu(container)
-        file_menu = tk.Menu(menu_bar, tearoff = 0)
-        file_menu.add_command(label = "Open file", command = lambda:self.popupmsg("Not supported yet"))
-        file_menu.add_command(label = "Save figure", command = lambda:self.popupmsg("Not supported yet"))
-        file_menu.add_command(label = "Close file", command = lambda:self.popupmsg("Not supported yet"))
-        file_menu.add_separator()
-        file_menu.add_command(label = "Exit", command = self.quit)
-        menu_bar.add_cascade(label = "File", menu = file_menu)
+        # Main menu
+        self.menu_bar = it.MenuInterface(self, self)
 
-        about_menu = tk.Menu(menu_bar, tearoff = 0)
-        about_menu.add_command(label = "Stuff", command = lambda:self.popupmsg("Stuff"))
-        about_menu.add_command(label = "Doc", command = lambda:self.popupmsg("Documentation!"))
-        menu_bar.add_cascade(label = "About", menu = about_menu)
-
-        tk.Tk.config(self, menu = menu_bar)
-
-        # PAGE HANDLER (to handle different pages if required)
-        frames = list([MainPage])
+        # Page handler (to handle different pages if required)
+        self.active = None
         self.frames = {}
-
+        frames = list([mp.MainPage])
+       
         # Handles the case where there is only one frame 
         if len(frames) == 1:
             frame = frames[0](container, self)
@@ -56,31 +46,43 @@ class VisuGUI(tk.Tk):
                 self.frames[fr] = frame
                 frame.grid(row = 0, column = 0, sticky = "nsew")
             
-        self.show_frame(MainPage)
+        self.show_frame(mp.MainPage)
 
 
     # Puts the frame we want to show on the top of the stack
     def show_frame(self, cont):
         frame = self.frames[cont]
+        self.active = frame
         frame.tkraise()
-
-    # Quits the program
-    def quit(self):
-        self.destroy()
-
+    
     def popupmsg(self, message):
         popup = tk.Tk()
-
         def leavemini():
-            popup.destroy()
-            
+            popup.destroy()            
         popup.wm_title("Popup!")
         label = ttk.Label(popup, text = message, font = settings.FONT)
         label.grid()
         b1 = ttk.Button(popup, text = "Ok!", command = leavemini)
         b1.grid()
         popup.mainloop()
-   
+
+    # When a file is opened or closed, refresh the label displaying  its name
+    def refresh_filename(self, filename):
+        self.active.filename.config(text = filename)
+
+    # When a figure is opened or closed, refresh the figure canvas
+    # (for now, no distinction between closing or opening)
+    def refresh_figure(self):
+        self.active.f.clear()
+        # Computation and plot generation will happen here
+        a = self.active.f.add_subplot(111)
+        a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
+        # Updating the canvas
+        self.active.plot_figure.canvas.show()
+
+    def refresh_layers(self):
+        # Will refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
+        print("hello")
         
 
 if __name__ == "__main__":
