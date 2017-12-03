@@ -74,9 +74,10 @@ class VisuGUI(tk.Tk):
     # (for now, no distinction between closing or opening)
     def refresh_figure(self):
         self.active.f.clear()
-        # Computation and plot generation will happen here
-        a = self.active.f.add_subplot(111)
-        a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
+        if settings.OPENED:
+            # Computation and plot generation will happen here
+            a = self.active.f.add_subplot(111)
+            a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
         # Updating the canvas
         self.active.plot_figure.canvas.show()
 

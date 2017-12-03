@@ -41,11 +41,8 @@ class LayerHandler(tk.Frame):
 
         # Gets the selected layers and removes them from the list they are taken from
         current = listbox_from.curselection()
-        for item in current:
+        for item in current[: : -1]:
             listbox_to.insert("end", listbox_from.get(item))
-
-         # BUG HERE   
-        for item in current:
             listbox_from.delete(item)
 
         # Sorts the items from the modified list to have ordered layers
@@ -53,8 +50,7 @@ class LayerHandler(tk.Frame):
         for i in range(0, listbox_to.size()):
            l.append(listbox_to.get(i)) 
         listbox_to.delete(0, "end")
-        l.sort()
-        l.sort(key=lambda item: (len(item), item))
+        l.sort(key=lambda item: (len(item), item)) # Sort by length of the string, then by alphabetical order
 
         # Inserts the ordered layers in the list they are going to
         for item in l:
