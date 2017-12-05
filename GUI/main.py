@@ -48,12 +48,18 @@ class VisuGUI(tk.Tk):
             
         self.show_frame(mp.MainPage)
 
+        self.bind_all_actions()
+
+        
+
 
     # Puts the frame we want to show on the top of the stack
     def show_frame(self, cont):
         frame = self.frames[cont]
         self.active = frame
         frame.tkraise()
+
+    
     
     def popupmsg(self, message):
         popup = tk.Tk()
@@ -68,22 +74,54 @@ class VisuGUI(tk.Tk):
 
     # When a file is opened or closed, refresh the label displaying  its name
     def refresh_filename(self, filename):
+        print("Refreshing the filename!")
         self.active.filename.config(text = filename)
 
     # When a figure is opened or closed, refresh the figure canvas
-    # (for now, no distinction between closing or opening)
+    ### BUG WITH THE TOOLBAR HERE
+    # Happens when many moves are made by the user (history capacity of the toolbar?)
     def refresh_figure(self):
+        print("Refreshing figure!")
         self.active.f.clear()
         if settings.OPENED:
             # Computation and plot generation will happen here
             a = self.active.f.add_subplot(111)
             a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
+           # self.active.plot_figure.toolbar.update()
         # Updating the canvas
+        #self.active.f.tight_layout()
+        self.active.plot_figure.canvas.draw()
         self.active.plot_figure.canvas.show()
+        #self.active.plot_figure.canvas.motion_notify_event(1, 1)
+        self.active.plot_figure.toolbar.update()
 
+    # Refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
     def refresh_layers(self):
-        # Will refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
-        print("hello")
+        print("Refreshing the layers' listboxes!")
+
+    # Binds the important menu commands to keyboard shortcuts
+    def bind_all_actions(self):
+        def open_file_shortcut(event):
+            return self.menu_bar.open_file(self, self)
+
+        def close_file_shortcut(event):
+            return self.menu_bar.close_file(self, self)
+
+        def quit_shortcut(event):
+            return self.menu_bar.quit(self)
+
+        def save_figure_shortcut(event):
+            return self.menu_bar.save_figure(self)
+
+        def refresh_figure_shortcut(event):
+            return self.refresh_figure(self)
+
+        self.bind("<Control-Key-o>", open_file_shortcut)
+        self.bind("<Control-Key-w>", close_file_shortcut)
+        self.bind("<Control-Key-q>", quit_shortcut)
+        self.bind("<Control-Key-s>", save_figure_shortcut)
+        self.bind("<Control-Key-r>", refresh_figure_shortcut)
+        
         
 
 if __name__ == "__main__":
