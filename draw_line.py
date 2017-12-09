@@ -1,27 +1,104 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 from line import Line
 
 
-# Plan 1: draw lines with matplotlib function, and get the resulted figure as an image
-#http://www.icare.univ-lille1.fr/tutorials/convert_a_matplotlib_figure
-#https://stackoverflow.com/questions/35355930/matplotlib-figure-to-image-as-a-numpy-array
-# I couldn't get the image
+# TODO color handling
+# so far the image has only 1 channel (since it's gray). If we want to have colors, we should make it 3D
+# TODO simplify functions
+# the line-drawing functions are from the internet, we do not use all the output values, might be simplified
 
-# Plan 2: Multidimensional numpy array, draw the lines as changing the belonging coordinates
-# Havn't tried that so far.
+
+def naive_line(r0, c0, r1, c1):
+    """Another possibility to draw lines"""
+    # The algorithm below works fine if c1 >= c0 and c1-c0 >= abs(r1-r0).
+    # If either of these cases are violated, do some switches.
+    if abs(c1-c0) < abs(r1-r0):
+        # Switch x and y, and switch again when returning.
+        xx, yy, val = naive_line(c0, r0, c1, r1)
+        return (yy, xx, val)
+
+    # At this point we know that the distance in columns (x) is greater
+    # than that in rows (y). Possibly one more switch if c0 > c1.
+    if c0 > c1:
+        return naive_line(r1, c1, r0, c0)
+
+    # We write y as a function of x, because the slope is always <= 1
+    # (in absolute value)
+    x = np.arange(c0, c1+1, dtype=float)
+    print(x)
+    y = x * (r1-r0) / (c1-c0) + (c1*r0-c0*r1) / (c1-c0)
+    print(y)
+
+    valbot = np.floor(y)-y+1
+    valtop = y-np.floor(y)
+
+    return (np.concatenate((np.floor(y), np.floor(y)+1)).astype(int), np.concatenate((x,x)).astype(int),
+            np.concatenate((valbot, valtop)))
+
+
+def trapez(y,y0,w):
+    """Function used in weighted_lines"""
+    return np.clip(np.minimum(y+1+w/2-y0, -y+1+w/2+y0),0,1)
+
+
+def weighted_line(r0, c0, r1, c1, w, rmin=0, rmax=np.inf):
+    """Calculates the points of a line between the two given points"""
+
+    # The algorithm below works fine if c1 >= c0 and c1-c0 >= abs(r1-r0).
+    # If either of these cases are violated, do some switches.
+    if abs(c1-c0) < abs(r1-r0):
+        # Switch x and y, and switch again when returning.
+        xx, yy, val = weighted_line(c0, r0, c1, r1, w, rmin=rmin, rmax=rmax)
+        return (yy, xx, val)
+
+    # At this point we know that the distance in columns (x) is greater
+    # than that in rows (y). Possibly one more switch if c0 > c1.
+    if c0 > c1:
+        return weighted_line(r1, c1, r0, c0, w, rmin=rmin, rmax=rmax)
+
+    # The following is now always < 1 in abs
+    slope = (r1-r0) / (c1-c0)
+
+    # Adjust weight by the slope
+    w *= np.sqrt(1+np.abs(slope)) / 2
+
+    # We write y as a function of x, because the slope is always <= 1
+    # (in absolute value)
+    x = np.arange(c0, c1+1, dtype=float)
+    y = x * slope + (c1*r0-c0*r1) / (c1-c0)
+
+    # Now instead of 2 values for y, we have 2*np.ceil(w/2).
+    # All values are 1 except the upmost and bottommost.
+    thickness = np.ceil(w/2)
+    yy = (np.floor(y).reshape(-1,1) + np.arange(-thickness-1,thickness+2).reshape(1,-1))
+    xx = np.repeat(x, yy.shape[1])
+    vals = trapez(yy, y.reshape(-1,1), w).flatten()
+
+    yy = yy.flatten()
+
+    # Exclude useless parts and those outside of the interval
+    # to avoid parts outside of the picture
+    mask = np.logical_and.reduce((yy >= rmin, yy < rmax, vals > 0))
+
+    return (yy[mask].astype(int), xx[mask].astype(int), vals[mask])
 
 
 def draw_segment(img, p1, p2):
-    """This could draw a segment between the given two points"""
+    """Draw a segment between the given two points"""
 
+    linecolor = 255 # TODO color
     # Draw the segment to the image
-    # pad the array to 3D
-    img = np.dstack([img]*3)
-    return img
+    (xx, yy, val) = weighted_line(p1[0], p1[1], p2[0], p2[1], 0)
+    img[xx, yy] = linecolor
+
+    # pad the array to 3D - later might be needed
+    #img = np.dstack([img]*3)
+
 
 def draw_line(img, line):
     """ Draws the line( / broken line) on img
@@ -29,30 +106,9 @@ def draw_line(img, line):
         line: Line object
     """
 
-    # Calls drawsegment with each segment
+    # Calls draw_segment with each segment
     for i in range(1, len(line.points)):
-        draw_segment(img, line.points[i, i-1])
-
-
-# Found on the internet, does not work for me...
-def fig2data(fig):
-    """
-    @brief Convert a Matplotlib figure to a 4D numpy array with RGBA channels and return it
-    @param fig a matplotlib figure
-    @return a numpy 3D array of RGBA values
-    """
-    # draw the renderer
-    fig.canvas.draw()
-
-    # Get the RGBA buffer from the figure
-    w, h = fig.canvas.get_width_height()
-    buf = np.fromstring(fig.canvas.tostring_argb(), dtype=np.uint8)
-    buf.shape = (w, h, 4)
-
-    # canvas.tostring_argb give pixmap in ARGB mode. Roll the ALPHA channel to have it in RGBA mode
-    buf = np.roll(buf, 3, axis=2)
-    return buf
-
+        draw_segment(img, line.points[i-1], line.points[i])
 
 
 #######################################################
@@ -60,58 +116,24 @@ def fig2data(fig):
 #######################################################
 
 # TEST 1
-points1 = [[0, 0], [2, 2], [3, 5]]
+points1 = [[0, 0], [30, 20], [0, 40], [60, 10]]
 sign = 1
 line1 = Line(points1, sign)
-x = 10
-y= 10
+x = 100
+y = 100
 img = np.zeros((x,y))
 
-img_s = draw_segment(img, points1[0], points1[1])
-print(img_s.shape)
+draw_line(img, line1)
 fig, ax = plt.subplots()
-ax.imshow(img_s)#, cmap='gray',interpolation='nearest',
-            #origin='lower',  extent=[0, 10, 0, 10])
-
-# # Things I tried randomly...
-
-#img_l = draw_line(img, line1)
-# check the parameters
-# fig, ax = plt.subplots()
-# ax.imshow(img, cmap='gray',interpolation='nearest',
-#             origin='lower',  extent=[0, 10, 0, 10])
-# plt.plot([0, 1], [2, 3], linestyle='-')
-
-##
-#
-# fig = Figure()
-# canvas = FigureCanvas(fig)
-# ax = fig.gca()
-#
-# ax.text(0.0,0.0,"Test", fontsize=45)
-# ax.axis('off')
-#
-# canvas.draw()       # draw the canvas, cache the renderer
-#
-# image = np.fromstring(canvas.tostring_rgb(), dtype=np.uint8)
-# plt.imshow(image)
-#
-# ##
-
-# fig1 = plt.gcf()
-# img2 = fig2data(fig1)
-#
-# print(img2)
-
-# plt.savefig("trial.png")
-# print(img2)
-# img2.draw(Line((2,2), (5,7)))
-
-#print(img)
-#plt.draw((0, 1), (2,3))
+ax.imshow(img, cmap='gray',interpolation='nearest', origin='upper')
 
 plt.show()
 
+# TEST 2
+img2 = mpimg.imread('lena.jpg')
+print(img2[10:20, 40:50])
+draw_line(img2, line1)
+fig2, ax2 = plt.subplots()
+ax2.imshow(img2,cmap='gray', interpolation='nearest', origin='upper')
 
-#plt.plot([0, 1], [2, 3], color='k', linestyle='-', linewidth=2)
-#plt.savefig("trial.png")
+plt.show()
