@@ -71,18 +71,21 @@ def calculate_output(theta, size, layer_idx):
 # Define the first layer
 W0 = np.array([ [1, 0], [0, 1], [-1, 0], [0, -1] ])
 b0 = np.array([0, 0, 0, 0])
+c0 = [255, 0, 0]
 # Why does it run the whole layer.py file??
-l0 = Layer(W0, b0)
+l0 = Layer(W0, b0, c0)
 
 # Define the second layer
 W1 = np.array([ [1, 0, 0, 0], [0, 1, 0, 1], [1, 0, 1, 2]])
 b1 = np.array([ 0, 0, 0])
-l1 = Layer(W1, b1)
+c1 = [0, 255, 0]
+l1 = Layer(W1, b1, c1)
 
 # Define the third layer
 W2 = np.array([ [-1, 0, 0], [1, 1, 0]])
 b2 = np.array([ 0, 0])
-l2 = Layer(W2, b2)
+c2 = [0, 0, 255]
+l2 = Layer(W2, b2, c2)
 
 theta = []
 theta.append(l0)

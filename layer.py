@@ -5,6 +5,7 @@ import numpy as np
 #   Maybe something with property, but I could not get it work at first
 #   We should not be able to modify b! (and W) - except in the constructor
 
+# In test 4 dimension missmatch, probably we should handle it... Or just be really careful
 
 class Layer:
     """Class for defining a layer with its weight matrix and bias vector"""
@@ -12,12 +13,14 @@ class Layer:
     b = []  # np.array!
     n_neurons = 0
     n_input = 0
+    color = [0,0,0]
 
-    def __init__(self, _W, _b):
+    def __init__(self, _W, _b, _color):
         self.W = _W
         self.b = _b[:,np.newaxis]
         self.n_neurons = _W.shape[0]
         self.n_input = _W.shape[1]
+        self.color = _color
 
     def calculate_layer_output_mat(self, *args):
         """Calculate the output of the layer for *args.
@@ -41,26 +44,26 @@ class Layer:
 ##############################################################
 
 # # TEST 1
-# # Empty constructor - error since we do not have that
+# Empty constructor - error since we do not have that
 # l1 = Layer()
 # print("W:\n", l1.W, "b:\n", l1.b)
 
 
 # # TEST 2
 # # A normal setter test
-# l2 = Layer(np.array([(1,2), (2,3), (5,6)]), np.array([1,2,3]))
-# print("W:\n", l2.W, "\nb:\n", l2.b)
-#
+# l2 = Layer(np.array([(1,2), (2,3), (5,6)]), np.array([1,2,3]), [90, 60, 90])
+# print("W:\n", l2.W, "\nb:\n", l2.b, "\ncolor:\n", l2.color)
+
 # # TEST 3
 # # Test for changing b - WE SHOULD NOT DO THAT! b SHOULD HAVE THE SHAPE DEFINED BEFORE
-# l3 = Layer(np.array([[1,2], [2,3], [5,6]]), np.array([1,2,3]))
+# l3 = Layer(np.array([[1,2], [2,3], [5,6]]), np.array([1,2,3]), [90, 60, 90])
 # l3.b = np.array([4,5,6])
-# print("W:\n", l3.W, "\nb:\n", l3.b)
+# print("W:\n", l3.W, "\nb:\n", l3.b, "\ncolor:\n", l3.color)
 
 
 # # TEST 4
 # # Calculation of output for a given easy example
-# l4 = Layer(np.array([ [2, 1], [1, 2] ]), np.array([-2, -2]))
+# l4 = Layer(np.array([ [2, 1], [1, 2] ]), np.array([-2, -2]), [90, 60, 90])
 # out4 = l4.calculate_layer_output_mat([2, 10])
 # expected = [12, 20]
 # print("Output:\n", out4, "\nExpected:\n", expected)
