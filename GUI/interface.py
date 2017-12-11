@@ -19,8 +19,7 @@ class MenuInterface(tk.Frame):
         self.figure_menu = tk.Menu(self.menu_bar, tearoff = 0)
         self.figure_menu.add_command(label = "Refresh the figure", command = controller.refresh_figure, state = "disabled", accelerator = "Ctrl + R")
         self.figure_menu.add_command(label = "Set the view to \"Automatic\"", command = lambda:controller.popupmsg("Not supported yet!"), state = "disabled")
-        # ADD A CHECKBOX TO DETERMINE WHETHER THE VIEW SHOULD BE RESETTED OR NOT WHEN REFRESHING THE IMAGE
-        self.figure_menu.add_command(label = "Reset the view to default", command =lambda:controller.popupmsg("Not supported yet!"), state = "disabled")
+        self.figure_menu.add_command(label = "Reset the view to default", command =lambda:self.reset_default_view(parent), state = "disabled")
         self.menu_bar.add_cascade(label = "Figure", menu = self.figure_menu)
 
         self.about_menu = tk.Menu(self.menu_bar, tearoff = 0)
@@ -77,9 +76,9 @@ class MenuInterface(tk.Frame):
             controller.refresh_filename(settings.FILENAME)
             controller.refresh_figure()
 
-##    def reset_original_view(self, parent):
-##        print("Resetting the view to the original!")
-##        parent.active.plot_figure.toolbar.autoscale_view()
+    def reset_default_view(self, parent):
+        print("Resetting the view to the original!")
+        parent.active.plot_figure.toolbar.home()
 
             
             
