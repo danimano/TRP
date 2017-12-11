@@ -8,14 +8,14 @@ from tkinter import filedialog
 from matplotlib.figure import Figure
 
 
-class VisuGUI(tk.Tk):
+class PearGUI(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         settings.init()
 
         # Defining the title of the window, the size and the icon 
-        tk.Tk.title(self, "Wonderful Neural Network Visualization")
+        tk.Tk.title(self, "Pear")
         tk.Tk.minsize(self, width = 800, height = 600)
         tk.Tk.iconbitmap(self, default = settings.ICON)
         tk.Tk.columnconfigure(self, 0, weight = 1)
@@ -51,8 +51,6 @@ class VisuGUI(tk.Tk):
         self.bind_all_actions()
 
         
-
-
     # Puts the frame we want to show on the top of the stack
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -78,22 +76,16 @@ class VisuGUI(tk.Tk):
         self.active.filename.config(text = filename)
 
     # When a figure is opened or closed, refresh the figure canvas
-    ### BUG WITH THE TOOLBAR HERE
-    # Happens when many moves are made by the user (history capacity of the toolbar?)
     def refresh_figure(self):
         print("Refreshing figure!")
+
         self.active.f.clear()
         if settings.OPENED:
-            # Computation and plot generation will happen here
             a = self.active.f.add_subplot(111)
             a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
-           # self.active.plot_figure.toolbar.update()
-        # Updating the canvas
-        #self.active.f.tight_layout()
-        self.active.plot_figure.canvas.draw()
-        self.active.plot_figure.canvas.show()
-        #self.active.plot_figure.canvas.motion_notify_event(1, 1)
-        self.active.plot_figure.toolbar.update()
+        self.active.plot_figure.refresh(self.active, self.active.f)     
+
+        
 
     # Refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
     def refresh_layers(self):
@@ -125,5 +117,5 @@ class VisuGUI(tk.Tk):
         
 
 if __name__ == "__main__":
-    app = VisuGUI()
+    app = PearGUI()
     app.mainloop()

@@ -21,3 +21,17 @@ class FigureHandler(tk.Frame, Figure):
         self.toolbar = NavigationToolbar2TkAgg(self.canvas, self)
         self.toolbar.update()
         self.canvas._tkcanvas.pack(anchor = "center")
+
+
+    def refresh(self, parent, f, *args, **kwargs):
+        self.canvas.get_tk_widget().destroy()
+        self.canvas._tkcanvas.destroy()
+        self.toolbar.destroy()
+
+        self.canvas = FigureCanvasTkAgg(f, master = self)
+        self.canvas.show()
+        self.canvas.get_tk_widget().pack(side = "top", fill = "both", expand = True)
+
+        self.toolbar = NavigationToolbar2TkAgg(self.canvas, self)
+        self.toolbar.update()
+        self.canvas._tkcanvas.pack(anchor = "center")

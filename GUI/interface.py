@@ -73,6 +73,7 @@ class MenuInterface(tk.Frame):
             self.figure_menu.entryconfig("Reset the view to default", state = "disabled")
             parent.active.refresh.config(state = "disabled")
             settings.OPENED = False
+            parent.active.f = settings.FIGURE
             
             controller.refresh_filename(settings.FILENAME)
             controller.refresh_figure()
