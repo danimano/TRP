@@ -8,6 +8,7 @@ from line import Line
 
 
 # TODO color handling
+# add color in parameter from the layer
 # so far the image has only 1 channel (since it's gray). If we want to have colors, we should make it 3D
 # TODO simplify functions
 # the line-drawing functions are from the internet, we do not use all the output values, might be simplified

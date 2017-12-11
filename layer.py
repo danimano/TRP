@@ -6,6 +6,7 @@ import numpy as np
 #   We should not be able to modify b! (and W) - except in the constructor
 
 # In test 4 dimension missmatch, probably we should handle it... Or just be really careful
+# DOES NOT WORK WITH SINGLE INPUT WTF
 
 class Layer:
     """Class for defining a layer with its weight matrix and bias vector"""
@@ -64,8 +65,11 @@ class Layer:
 # # TEST 4
 # # Calculation of output for a given easy example
 # l4 = Layer(np.array([ [2, 1], [1, 2] ]), np.array([-2, -2]), [90, 60, 90])
-# out4 = l4.calculate_layer_output_mat([2, 10])
-# expected = [12, 20]
+# inp = np.array([[2, 2], [10, 10]])
+# print(inp.shape)
+# #inp = np.array([[2], [10]])
+# out4 = l4.calculate_layer_output_mat(inp)
+# expected = [[12, 12], [20, 20]]
 # print("Output:\n", out4, "\nExpected:\n", expected)
 
 # # TEST 5

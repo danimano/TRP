@@ -5,6 +5,7 @@ from apply_nonlinearity import apply_nonlinearity
 # I think it calculates the right things, but should be checked
 # there is no kind of error handling so far
 
+
 def calculate_output(theta, size, layer_idx):
     """Calculates the  output of the given layer for all the possible inputs in [0, size-1].
 
@@ -65,36 +66,36 @@ def calculate_output(theta, size, layer_idx):
 #                   TESTS                       #
 #################################################
 
-# TEST 1
-# 3layer network, predefined weights and biases
-
-# Define the first layer
-W0 = np.array([ [1, 0], [0, 1], [-1, 0], [0, -1] ])
-b0 = np.array([0, 0, 0, 0])
-c0 = [255, 0, 0]
-# Why does it run the whole layer.py file??
-l0 = Layer(W0, b0, c0)
-
-# Define the second layer
-W1 = np.array([ [1, 0, 0, 0], [0, 1, 0, 1], [1, 0, 1, 2]])
-b1 = np.array([ 0, 0, 0])
-c1 = [0, 255, 0]
-l1 = Layer(W1, b1, c1)
-
-# Define the third layer
-W2 = np.array([ [-1, 0, 0], [1, 1, 0]])
-b2 = np.array([ 0, 0])
-c2 = [0, 0, 255]
-l2 = Layer(W2, b2, c2)
-
-theta = []
-theta.append(l0)
-theta.append(l1)
-theta.append(l2)
-sizex1 = 2
-sizey1 = 3
-layer_idx1 = 2
-output = calculate_output(theta, [sizex1, sizey1], layer_idx1)
-print("Final output, along 3rd dim.")
-for z in range(0, output.shape[2]):
-    print("output[:,:,z]\n", output[:,:,z])
+# # TEST 1
+# # 3layer network, predefined weights and biases
+#
+# # Define the first layer
+# W0 = np.array([ [1, 0], [0, 1], [-1, 0], [0, -1] ])
+# b0 = np.array([0, 0, 0, 0])
+# c0 = [255, 0, 0]
+# # Why does it run the whole layer.py file??
+# l0 = Layer(W0, b0, c0)
+#
+# # Define the second layer
+# W1 = np.array([ [1, 0, 0, 0], [0, 1, 0, 1], [1, 0, 1, 2]])
+# b1 = np.array([ 0, 0, 0])
+# c1 = [0, 255, 0]
+# l1 = Layer(W1, b1, c1)
+#
+# # Define the third layer
+# W2 = np.array([ [-1, 0, 0], [1, 1, 0]])
+# b2 = np.array([ 0, 0])
+# c2 = [0, 0, 255]
+# l2 = Layer(W2, b2, c2)
+#
+# theta = []
+# theta.append(l0)
+# theta.append(l1)
+# theta.append(l2)
+# sizex1 = 2
+# sizey1 = 3
+# layer_idx1 = 2
+# output = calculate_output(theta, [sizex1, sizey1], layer_idx1)
+# print("Final output, along 3rd dim.")
+# for z in range(0, output.shape[2]):
+#     print("output[:,:,z]\n", output[:,:,z])
