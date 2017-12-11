@@ -78,12 +78,15 @@ class PearGUI(tk.Tk):
     # When a figure is opened or closed, refresh the figure canvas
     def refresh_figure(self):
         print("Refreshing figure!")
-
         self.active.f.clear()
+        if self.active.bg_checkbox.instate(["selected"]):
+            print("Use approximated image as background!")
+        else:
+            print("Plain background!")
         if settings.OPENED:
             a = self.active.f.add_subplot(111)
             a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
-        self.active.plot_figure.refresh(self.active, self.active.f)     
+        self.active.plot_figure.refresh(self.active, self.active.f)
 
         
 

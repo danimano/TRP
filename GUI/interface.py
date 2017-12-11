@@ -18,8 +18,8 @@ class MenuInterface(tk.Frame):
 
         self.figure_menu = tk.Menu(self.menu_bar, tearoff = 0)
         self.figure_menu.add_command(label = "Refresh the figure", command = controller.refresh_figure, state = "disabled", accelerator = "Ctrl + R")
+        self.figure_menu.add_command(label = "Set the view to \"Automatic\"", command = lambda:controller.popupmsg("Not supported yet!"), state = "disabled")
         # ADD A CHECKBOX TO DETERMINE WHETHER THE VIEW SHOULD BE RESETTED OR NOT WHEN REFRESHING THE IMAGE
-        self.figure_menu.add_command(label = "Reset the view to \"Automatic\"", command = lambda:controller.popupmsg("Not supported yet!"), state = "disabled")
         self.figure_menu.add_command(label = "Reset the view to default", command =lambda:controller.popupmsg("Not supported yet!"), state = "disabled")
         self.menu_bar.add_cascade(label = "Figure", menu = self.figure_menu)
 
@@ -45,7 +45,7 @@ class MenuInterface(tk.Frame):
             self.file_menu.entryconfig("Save figure", state = "normal")
             self.file_menu.entryconfig("Close file", state = "normal")
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
-            self.figure_menu.entryconfig("Reset the view to \"Automatic\"", state = "normal")
+            self.figure_menu.entryconfig("Set the view to \"Automatic\"", state = "normal")
             self.figure_menu.entryconfig("Reset the view to default", state = "normal")
             parent.active.refresh.config(state = "normal")
             settings.OPENED = True
@@ -58,7 +58,6 @@ class MenuInterface(tk.Frame):
         if settings.OPENED:
             print("Saving file!")
             parent.active.plot_figure.toolbar.save_figure()
-##            parent.active.plot_figure.toolbar.update()
         
 
     # Closes an opened file
@@ -69,7 +68,7 @@ class MenuInterface(tk.Frame):
             self.file_menu.entryconfig("Save figure", state = "disabled")
             self.file_menu.entryconfig("Close file", state = "disabled")
             self.figure_menu.entryconfig("Refresh the figure", state = "disabled")
-            self.figure_menu.entryconfig("Reset the view to \"Automatic\"", state = "disabled")
+            self.figure_menu.entryconfig("Set the view to \"Automatic\"", state = "disabled")
             self.figure_menu.entryconfig("Reset the view to default", state = "disabled")
             parent.active.refresh.config(state = "disabled")
             settings.OPENED = False
