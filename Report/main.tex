@@ -24,7 +24,7 @@
 \usepackage[justification=centering]{caption}
 
 \title{Deep Neural Networks: A Visualization and Comparison with Shallow Neural Networks\\ \large Tutored Research Project II}
-\author{Candice Bent\'ejac, Anna Cs\"org\H o, D\'aniel Hajt\'o}
+\author{Candice Bent\'ejac, Anna Cs\"org\H o, D\'aniel Hajt\'o \\Tutored by Vincent Lepetit}
 
 \begin{document}
 \maketitle
@@ -51,7 +51,7 @@ This report presents our work our Tutored Research Project on Deep Neural Networ
 \paragraph{}In this report of our Tutored Research Project, we focus on two specific concerns that the study of ANN is raising. The first one is about the networks' visualization: in order to better understand how the ANN are optimizing themselves, we might want to gain insights from a direct visualization of the decisions that the networks are taking. To that effect, we will build a library that allows its users to precisely visualize the decision boundaries that a given network is determining for each of its layers. The second of our concerns regards the type of network that has the best ability to approximate functions. We thus will make a comparison between two different types of network's structures: a shallow one (regular ANN) and a deep one (DNN). Putting them through the same training and testing conditions, we will attempt to approximate grayscale images of different difficulties (synthetic images, synthetic textures and real images) and try to draw a general conclusion based on our results about which network's structure seems to be more adapted to problem solving.
 
 % Outline
-\paragraph{}To start with, we will therefore review the already existing visualization solutions as well as the studies that have been conducted on the correlation between a network's structure and its ability to generalize. The following section will be dedicated to describing the requirements we had to follow for both of our tasks, before describing the software architecture of our library. We will then comment our implementation and finally, present the tests we ran and the results they produced.
+\paragraph{}To start with, we will therefore review the already existing visualization solutions as well as the studies that have been conducted on the correlation between a network's structure and its ability to generalize. The following section will be dedicated to describing the requirements we had to follow for both of our tasks, before describing the software architecture of Pear, our library. We will then comment our implementation and finally, present the tests we ran and the results we obtained.
 
 
 
@@ -122,7 +122,7 @@ This report presents our work our Tutored Research Project on Deep Neural Networ
 \item All the neural networks built for the experiments should be created and used with TensorFlow.
 \item All the images used for our experiments should be of a format that can be handled by TensorFlow neural network. 
 \item All plots should be plotted using Matplotlib.
-\item Only greyscale images should be used as inputs for our experiments.
+\item Only grayscale images should be used as inputs for our experiments.
 \item The images used as inputs for our experiments should be of different types and difficulties: synthetic simple images (such as a black square on a white background), synthetic images with noise, synthetic textures, and real images.
 \item The method of least squares should be used to evaluate the networks' abilities to approximate the input images.
 \item The smooth L1 norm should be used as the loss function to evaluate the networks' abilities to approximate the input images.
@@ -144,17 +144,34 @@ This report presents our work our Tutored Research Project on Deep Neural Networ
 
 \section{Software architecture}
 %(ULM schemes), how our software is organized, what our modules are. Also insert a magnificently beautiful Gantt chart.
-\paragraph{}Our work spanned over several weeks. The way we distributed and organized it is shown in the Gantt chart of Figure XX. (Insert beautiful updated Gantt chart here -- see how to split it so that the X pages remain readable on a figure) Within this section, we will dive into the architecture of our project, and more specifically, of our ANN visualization library. The comparison we made between the deep and the shallow networks is based on experiments and analysis of their results only, which means that it does not have a dedicated software architecture. We will however briefly mention its organization.
+\paragraph{}Our work spanned over several weeks. The way we distributed and organized it is shown in the Gantt chart of Figure XX. (Insert beautiful updated Gantt chart here -- see how to split it so that the X pages remain readable on a figure) Within this section, we will dive into the architecture of our project, and more specifically, of Pear, our ANN visualization library. The comparison we made between the deep and the shallow networks is based on experiments and analysis of their results only, which means that it does not have a dedicated software architecture. We will however briefly mention its organization.
 
-\subsection{Visualization library}
-Draft of a draft: the modules we have defined so far will very likely change over the course of the next few weeks...
-\paragraph{}The library aimed at ANN visualization we wrote obeys to the rules of modular programming. It is consequently constituted of different modules which have specific goals. (Insert ULM scheme here) It relies on three main modules: the input/output module, the computation module and the display module.
+\subsection{Pear: a visualization library}
+
+\paragraph{}The library aimed at ANN visualization we wrote obeys to the rules of modular programming. It is consequently constituted of different modules which have specific goals. Figure \ref{fig:modules} shows the relations between these modules within Pear, and more generally, the interaction between Pear and other external libraries that are required to get ours to work.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/Modules.png}
+\label{fig:modules}
+\caption{The images used to test the approximating capability of the different networks.}
+\end{figure}
+
+\subsubsection{Pear's modules}
+\paragraph{}Pear relies on three main modules: the Input / Output module, the Computation module and the Image Builder module.
 \begin{itemize}
-\item The input/output module handles exclusively what the user gives as an input (TensorFlow files) and what the user receives as an output (the visualized input network, or the computations made on every layer to obtain the decision boundaries). It focuses on reading and parsing the input TensorFlow files before transmitting them to the computation module. The computation or the display module, depending on what use the user wants to make of the library, will then send the output back to it.
-\item The computation module aims at applying the non-linearity operator (in our case, ReLU) to all neurons and then compute the output of the layers for all the possible inputs. Depending on what the user wants, it the gives the output back to the input/output module, or send it to the display module to get a visualization of it.
-\item The display module is in charge of the drawing of the decision boundaries for each layer. Given the results computed by the computation module, it draws the decision lines accordingly for the requested layers. It then transmits the created image to the input/output image. 
+\item The Input / Output module handles exclusively what the user gives as an input (TensorFlow files) and what the user receives as an output (the visualized input network, or the computations made on every layer to obtain the decision boundaries). It focuses on reading and parsing the input TensorFlow files before transmitting them to the Computation module. The Computation or the Image Builder module, depending on what use the user wants to make of the library, will then send the output back to it. The Input / Output module also makes use of our \verb?Layer? class, which we use to properly handle the weight and bias matrices of every network's layers.
+\item The Computation module aims at applying the non-linearity operator (in our case, ReLU) to all neurons and then compute the output of the layers for all the possible inputs. With these outputs, it then is able to compute the lines that correspond to the network's decision boundaries. Depending on what the user wants, it can either give the output back to the Input / Output module, or send it to the Image Builder module to get a visualization of it. The Computation module uses our \verb?Line? class to have a structure associated with the decision boundaries. 
+\item The Image Builder module is in charge of the drawing of the decision boundaries for each layer. Given the results computed by the computation module, it draws the decision lines accordingly for the requested layers. It then transmits the created image to the input/output image. The Image Builder module receives \verb?Line? instances created by the Computation module as an input, because in case the user would want to proceed to a visualization of the network, the use of the \verb?Line? class makes the figure generation easier by directly formatting the Computation module's output into data that is more adapted to plotting.
 \end{itemize}
 The executable uses all of these modules within a graphical user interface.
+
+\subsubsection{Dependency on other libraries}
+\paragraph{}Pear uses two external libraries: TensorFlow \citep{tensorflow2015-whitepaper} and Matplotlib \citep{Hunter:2007}. 
+
+\paragraph{}TensorFlow is used by the Input / Output module to read in files containing ANN created in and with TensorFlow. Indeed, TensorFlow has its own file representation -- a graph representing the network's structure -- and saves networks as binary files which cannot be read without it. 
+
+\paragraph{}Regarding Matplotlib, it is only used by the Image Builder module. Matplotlib being popular, well-documented and providing many functions that were relevant to our uses (figure creation, figure updating, easy navigation within a figure, etc.), we decided to directly use it to generate our plots rather than implementing it again on our own. 
 
 
 \subsection{Comparison between deep and shallow networks}
@@ -163,24 +180,97 @@ The executable uses all of these modules within a graphical user interface.
 
 \section{Implementation}
 %Explain which algorithms we used or what algorithms we wrote specifically for our project. Basically, speak of the code content in a comprehensive and appealing way.
-\paragraph{}In this section, we go into the implementation details of both the library (and the executable) and the tests used to compare deep networks with their shallow counterparts. We developed them using Python only, associated to Google's TensorFlow library, and "library\_name" for the graphical user interface.
+\paragraph{}In this section, we go into the implementation details of both Pear (and its executable) and the tests used to compare deep networks with their shallow counterparts. We developed them using Python only, associated to Google's TensorFlow and Matplotlib libraries, and Tkinter \citep{Hughes:2000:PTP:350314.350415} for the graphical user interface.
 
-\subsection{Visualization library}
-\paragraph{}For the implementation of the library to be clearer, we will go through each module's implementation individually.
+\subsection{Pear: a visualization library}
+\paragraph{} For Pear's implementation to be clearer, we will go through each module's implementation individually. 
 
-\subsubsection{Input/output module}
-\paragraph{}The library resorts to TensorFlow in this module only. Indeed, the files that can be given as an input are TensorFlow files, which are binary files, and require the use of the external library to be read. Out of these binary files, we extract the parameters and returns them to the computation module, which will proceed to all the necessary calculations.
+\subsubsection{Classes}
+\paragraph{\textit{Layer}} In order to handle the layers of the neural network compactly we defined a class for the layers.
+Each \textit{Layer} object has a weight matrix (\textit{W}) and a bias vector (\textit{b}). We also store the number of inputs the layer takes ($n\_input$), which is equal to the number of columns in the weight matrix, and the number of neurons in the layer ($n\_neurons$). which is equal to the number of outputs the layer will produce (number of rows in the weight matrix). A color value is also associated for each layer. We will use this color value later to draw the boundary lines to the image with a unique color. To define a $Layer$ object, in the constructor, the weight matrix, the bias vector and the color value should be given. 
+Each $Layer$ object is able to calculate its own output by its function $calculate\_layer\_output\_mat$. The function can handle several input points in the same time. The inputs should be given in an array, where each column corresponds to an input point. (The array should have $n\_input$ row.) The function returns an array, containing in each column the output of the layer for the given inputs in the same order. (The returned array will contain $n\_neurons$ row, and the same number of columns as the input did.) The output is calculated in the following way:
+
+\begin{equation}
+h = W x + b,
+\label{eq:layer_output}
+\end{equation}
+where $h$ is the output of the layer, $W$ is the weight matrix, $x$ is the input, and $b$ is the bias vector
+
+\paragraph{\textit{Line}}
+The $Line$ class was created in order to make the handling the drawing of a line/broken line simply and uniformly. A $Line$ object contains the coordinates of the points which are belonging to the boundary on an image ($points$). %TODO extend this when its done. Add the sign attribute if necessary
+
+
+\subsubsection{Input / Output module}
+\paragraph{}This module contains the functions related to file handling, meaning the the reader function, which is responsible for reading a TensorFlow file, an the saver function, which can be used to save the generated image. The library resorts to TensorFlow in this module only. Indeed, the files that can be given as an input are TensorFlow files, which are binary files, and require the use of the external library to be read. Out of these binary files, we extract the parameters and returns them to the computation module, which will proceed to all the necessary calculations.
+
+
+\paragraph{\textit{read\_file}}
+The input of this function is the name of the TensorFlow file to read. %TODO Description how the function opens/reads the file...
+Our representation of the network is a list of layers, containing the layers in order, meaning that the $i^{th}$ element of the list is the $i^ {th}$ layer.
+
+\paragraph{\textit{save\_image}}
+The function saves the given image on the specified filename given in its parameter in .png format. % TODO extend if it is ready
+
 
 \subsubsection{Computation module}
-\paragraph{}The computation module consists in two main tasks: applying the non-linearity operator, which we chose to be the rectified linear unit (ReLU), and computing the decisions made by the network for every layer that is asked by the user.
+\paragraph{}The Computation module consists in two main tasks: applying the non-linearity operator, which we chose to be the rectified linear unit (ReLU), and computing the decisions made by the network for every layer that is asked by the user.
 
-\paragraph{}Description of ReLU ($0$ if $h <= 0$, $h$ if $h > 0$) and of how the output of a layer is computed, given the weights and bias of it (and of the previous layers).
+%\paragraph{}Description of ReLU ($0$ if $h <= 0$, $h$ if $h > 0$) and of how the output of a layer is computed, given the weights and bias of it (and of the previous layers).
 
-\subsubsection{Display module}
+\paragraph{\textit{apply\_nonlinearity}}Applies the rectified linear unit (ReLU) function for its input given in its parameter. The ReLU function is defined by Equation \ref{eq:ReLU}:
+
+\begin{equation}
+\left\{
+  \begin{array}{lr}
+  	h & : h > 0\\
+    0 & : h \leq 0,
+  \end{array}
+\right.
+\label{eq:ReLU}
+\end{equation}
+where $h$ is the input.
+
+\paragraph{\textit{calculate\_output}}This function calculates the output of a given layer for all the possible input pairs in the given range. The parameters of the function are the index of the layer for which we would like to calculate the output ($layer\_idx$), the ordered list of the layers at least until the queried layer index ($theta$) and the size of the region for what we would like to calculate the output, (size of the image) ($size$).
+
+First, the function calculates all the possible input pairs in the range of $(0, size)$ % Maybe -if we will have it- talk about the resolution
+and initialize the $h\_new$ matrix, which will contain an input pair in each column.
+
+Then we will iterate over the layers until the queried one.
+In each iteration, the $h\_new$ matrix will be updated with the output of the next layer, so we will store the output of the current layer in $h\_old$ by copying $h\_new$ to $h\_old$ at the beginning of the iteration.
+Then we calculate the output of the next layer considering as input the output of the previous layer by calling its function $calculate\_layer\_output\_mat$ with $h\_old$. We save the new output values into $h\_new$ and if it is not the queried layer, we apply the ReLU operator on the output by calling $apply\_nonlinearity$. If the current layer is the queried layer, we reshape the output. The reshaped array will have the size given in the input ($size$) in the first two dimensions, and each channel of the reshaped array will be the output of a neuron in the queried layer, i.e. $h\_new[i,j,k]$ will stand for the output at the $k^{th}$ neuron if the input of the whole network would be $(i,j)$. This reshaped array is returned.
+
+\paragraph{\textit{get\_linecoord\_from\_layer\_output}}This function takes the output of a layer ($h$) and calculates the the decision line for each neuron. $h$ is an array, containing in each channel the output of a neuron in the layer. For each neuron we would like to determine the boundary, i.e. the line / broken line, which has all the positive outputs on one side and all the negative outputs on the other side. 
+
+Let us consider only one neuron in the layer. In order to calculate the boundary, we take the sign of each output ($h\_signed$). This means that we will have $-1$ on one side of the boundary, and $+1$ on the other side. Maybe we will have $0$s on the boundary itself, but since we are working on a finite grid, we can not be sure about this.
+
+We will go through all the output and compare the neighbouring values to see whether they are the same. We will have a helper array ($h\_conv$) to store this similarity. We assume that the boundary line is not in the first column and set the first column of $h\_conv$ to $1$. In the other columns, the value of $h\_conv$ id defined by Equation \ref{eq:getlines_signed}:
+
+\begin{equation}
+h\_conv[i,j]=\left\{
+  \begin{array}{lr}
+  	1 & : sign(h[i,j])=sign(h[i,j-1])\\
+    0 & : otherwise,
+  \end{array}
+\right.
+\label{eq:getlines_signed}
+\end{equation}
+
+This results an array, which will contain $0$s if and only if the output changed its sign, i.e. on the boundary. Since the output of a neuron in the layer is independent of the output of an other neuron in the same layer, we calculate these arrays simultaneously for all the neurons. Practically speaking, the $h\_conv$ array will have a third dimension, its depth will be equal to the depth of the output of the layer (given in $h$).
+
+We get the coordinates of the zero elements in $h\_conv$ and save it to $coords$. $coords$ will contain in each column the coordinates of a point on the boundary.
+From these coordinates we create a $Line$ object using the constructor of the class, and return it.
+% It is only tested to a layer with one neuron. The end of the function should be clarified ones it is tested better.
+
+\subsubsection{Image Builder module}
 \paragraph{}Description of how the drawing of the lines is implemented (using Matplotlib), and how we handle the change of position on the plane (especially translations and zooms, if we keep them in here).
 
-\subsubsection{Executable}
-\paragraph{}Basically, library wrapped up in a nice GUI. Mention which library was used for the GUI (Tkinter?) and definitely find a name for OUR library because there are too many libraries mentioned, the word "library" is over-used and it's getting confusing.
+
+\subsubsection{Pear's executable}
+\paragraph{}After writing Pear, a Python library, we also wrote an executable with a GUI that wraps the content of Pear. For the GUI, we chose to use Tkinter for its simplicity, its lightness and its documentation. Pear's GUI was written according to the object oriented paradigm, which allowed us to produce a modular and easy-to-modify code.
+
+\paragraph{}The executable allows the user to load a TensorFlow file in and to display the network it contains, one or multiple layers at a time. All the computations required to get the figure requested by the user are processed by the Computation in the back-end. In a similar fashion, the user cannot see the progressive steps of the network visualization's generation: only the final figures are shown to the user, and the intermediate figures (for example, figures where all the requested layers have not been drawn yet) are invisible to them.
+
+\paragraph{}The GUI also makes it way easier for the user to manipulate the generated plots. Indeed, Pear generates the figures requested by the user but leaves the visualization of these plots -- that is to say, the translations, rotations, zooms -- to the discretion of the user. Still using Matplotlib, Pear's executable allows the user to make all of those operations easily, using its dedicated functionalities.
 
 
 \subsection{Comparison between deep and shallow networks}
@@ -210,15 +300,29 @@ The test images were divided into 3 classes.
 \item Real-world images.
 \end{enumerate}
 
+Seven images were chosen as following: two synthetic, two textured and three real-world ones.~\ref{fig:imgs} 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{images/fuzzy.jpeg}
+\includegraphics[width=0.3\textwidth]{images/circ2.png}
+\includegraphics[width=0.3\textwidth]{images/cloud.jpeg}
+\includegraphics[width=0.3\textwidth]{images/wood.jpg}
+\includegraphics[width=0.3\textwidth]{images/cameraman.png}
+\includegraphics[width=0.3\textwidth]{images/lena.jpg}
+\includegraphics[width=0.3\textwidth]{images/baboon.jpeg}
+\caption{\label{fig:imgs}The images used to test the approximating capability of the different networks.}
+\end{figure}
+
 \subsubsection{Synthetic images}
 
 \paragraph{}As expected, a reasonably large network easily learns simple synthetic images. On Figure~\ref{fig:circ2}, its performance can be seen.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.3\textwidth]{circ2.png}
-\includegraphics[width=0.3\textwidth]{circ2e.png}
-\includegraphics[width=0.3\textwidth]{circ2o.png}
+\includegraphics[width=0.3\textwidth]{images/circ2.png}
+\includegraphics[width=0.3\textwidth]{images_old/circ2e.png}
+\includegraphics[width=0.3\textwidth]{images_old/circ2o.png}
 \caption{\label{fig:circ2}Synthetic image result. The left image is the original, the middle one is the squared error and the right one is the output of the network.}
 \end{figure}
 
@@ -226,31 +330,31 @@ The test images were divided into 3 classes.
 
 \paragraph{}This is a more interesting case. Because of its repetitive behavior, it contains less information than a general real-world image. Yet, because of its inner structure, the network fails to grasp this repetition and still tries to approximate areas independently. 
 
-\paragraph{}On Figure~\ref{fig:wood} we can see an acceptable performance. On the right side of the image, the network was able to recognize the wooden pattern, but on its left side, where high frequencies are dominating, it cannot do anything.
+\paragraph{}On Figure~\ref{fig:wood} we can see an acceptable performance. On the right side of the image, the network was able to recognize the wooden pattern, but on its left side, where high frequencies are dominating, it can not do anything.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.3\textwidth]{wood.jpg}
-\includegraphics[width=0.3\textwidth]{woodo.png}
+\includegraphics[width=0.3\textwidth]{images/wood.jpg}
+\includegraphics[width=0.3\textwidth]{images_old/woodo.png}
 \caption{\label{fig:wood}On this result, we can clearly see how miserably the network is failing to approximate the high frequency parts of the image.}
 \end{figure}
 
-\paragraph{}On Figure~\ref{fig:steel}, we can see a bad performance. The networks' only real achievement is the approximation of the lighting, the background of the image is darker in the upper right corner and lighter in the lower left. We can see, that it tried to do something with the "real information", but again, could not grasp its pattern, only some parts of it. 
+\paragraph{}On Figure~\ref{fig:steel}, we can see a bad performance. The networks' only real achievement is the approximation of the lighting: the background of the image is darker in the upper right corner and lighter in the lower left. We can see that it tried to do something with the "real information", but again, could not grasp its pattern, only some parts of it. 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.3\textwidth]{steel.jpeg}
-\includegraphics[width=0.3\textwidth]{steelo.png}
+\includegraphics[width=0.3\textwidth]{images_old/steel.jpeg}
+\includegraphics[width=0.3\textwidth]{images_old/steelo.png}
 \caption{\label{fig:steel}On this result, we can clearly see how miserably the network is failing to approximate the high frequency parts of the image.}
 \end{figure}
 
-\paragraph{}On Figure~\ref{fig:pebbles} we can see nothing. The network could not find any areas, which is worth to care about it. The image is quite random indeed, but there are patterns in it. For the network, the biggest problem was probably the too small surfaces of the similar color regions.
+\paragraph{}On Figure~\ref{fig:pebbles} we cannot see anything. The network could not find any areas which are worth caring about. The image is quite random indeed, but there are patterns in it. For the network, the biggest problem was probably the too small surfaces of the similar color regions.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.3\textwidth]{pebbles.jpeg}
-\includegraphics[width=0.3\textwidth]{pebbleso.png}
-\caption{\label{fig:pebbles}On this result we can clearly see how miserably fail the network to approximate the high frequency parts of the image.}
+\includegraphics[width=0.3\textwidth]{images_old/pebbles.jpeg}
+\includegraphics[width=0.3\textwidth]{images_old/pebbleso.png}
+\caption{\label{fig:pebbles}On this result we can clearly see how miserably the network is failing to approximate the high frequency parts of the image.}
 \end{figure}
 
 \subsubsection{Real world images}
