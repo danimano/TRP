@@ -1,9 +1,10 @@
 import numpy as np
-from layer import Layer
-from calculate_output import calculate_output
-from get_lines_from_layer_output import get_lines_from_layer_output
-from draw_line import draw_line
 import matplotlib.pyplot as plt
+from pear.layer import Layer
+from pear.calculate_output import calculate_output
+from pear.get_lines_from_layer_output import get_lines_from_layer_output
+from pear.draw_line import draw_line
+
 
 ##############################################################
 #                       TESTS                                #
