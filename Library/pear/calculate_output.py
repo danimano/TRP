@@ -1,6 +1,6 @@
 import numpy as np
-from layer import Layer
-from apply_nonlinearity import apply_nonlinearity
+from pear.layer import Layer
+from pear.apply_nonlinearity import apply_nonlinearity
 
 # Correctness should be checked by someone else as well
 # there is no kind of error handling so far

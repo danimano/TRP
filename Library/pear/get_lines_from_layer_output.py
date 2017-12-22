@@ -1,5 +1,5 @@
 import numpy as np
-from line import Line
+from pear.line import Line
 
 # The boundary can not be on the first column or row of the output h - is it a problem?...
 
