@@ -3,6 +3,7 @@ import settings
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+from pear.reader import read_tensorflow_file
 
 class MenuInterface(tk.Frame):
 
@@ -38,19 +39,38 @@ class MenuInterface(tk.Frame):
     # Opens a file
     def open_file(self, parent, controller):
         print("Opening file!")
-        filename = tk.filedialog.askopenfilename(filetypes=[("Python",".py")])
+        filename = tk.filedialog.askopenfilename(filetypes=[("META",".meta")])
         if filename:
-            filename = filename.split("/")[-1]
             self.file_menu.entryconfig("Save figure", state = "normal")
             self.file_menu.entryconfig("Close file", state = "normal")
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
             self.figure_menu.entryconfig("Set the view to \"Automatic\"", state = "normal")
             self.figure_menu.entryconfig("Reset the view to default", state = "normal")
             parent.active.refresh.config(state = "normal")
+
+            # Parsing the filename string
+            # We want an absolute path
+            # We want to withdraw the ".meta" extension while keeping the possible "." of the filename
+            filename_split = filename.split(".")
+            filename_path = ""
+            for i in range(0, len(filename_split) - 1):
+                filename_path += filename_split[i]
+                if i < len(filename_split) - 2:
+                    filename_path += "."
+            print(filename_path)
+
+            # Extracting the neural network's parameters from the file
+            print("Loading the neural network's parameters from the TensorFlow file...")
+            parent.network = read_tensorflow_file(filename_path)
+            print("The neural network's parameters were loaded!")
+            
             settings.OPENED = True
 
-            controller.refresh_filename("Visualizing " + filename)
+            # Displaying the filename without the whole path nor its extension
+            controller.refresh_filename("Visualizing \"" + filename_path.split("/")[-1] + "\"")
+            controller.refresh_layers()
             controller.refresh_figure()
+            
 
     # Saves the currently displayed figure
     def save_figure(self, parent):
@@ -74,6 +94,7 @@ class MenuInterface(tk.Frame):
             parent.active.f = settings.FIGURE
             
             controller.refresh_filename(settings.FILENAME)
+            controller.refresh_layers()
             controller.refresh_figure()
 
     def reset_default_view(self, parent):

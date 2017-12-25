@@ -39,8 +39,8 @@ class MainPage(tk.Frame):
         self.bg_checkbox.grid(row = 1, column = 0, pady = 3)
 
         # Frame with listboxes to choose which layers to display
-        layer_lists = lh.LayerHandler(self, self)
-        layer_lists.grid(row = 2, column = 0, sticky = "nsew", pady = (45, 0))
+        self.layer_lists = lh.LayerHandler(self, self)
+        self.layer_lists.grid(row = 2, column = 0, sticky = "nsew", pady = (45, 0))
 
         # Checkbox to determine whether the view should be automatically scaled or not
         self.scaling_checkbox = ttk.Checkbutton(self, text = "Automatically scale the plot and set the view")
