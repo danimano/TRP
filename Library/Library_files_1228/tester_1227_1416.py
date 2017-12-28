@@ -24,9 +24,12 @@ b1 = np.array([0, 0])
 c1 = [0, 1, 0]
 l1 = Layer(W1, b1, c1)
 
+# In the last layer probably we should normalize with the size of the image?...
+#   (to get the color values between 0 and 1)
+
 # # Define the third layer
-W2 = np.array([[1, 1]])
-b2 = np.array([-3])
+W2 = np.array([[1/61, 1/61]])
+b2 = np.array([-3/61])
 c2 = [0, 0, 1]
 l2 = Layer(W2, b2, c2)
 
@@ -71,7 +74,7 @@ x = np.linspace(size_vec[0], size_vec[2], size_vec[2] - size_vec[0] + 1)
 y = np.linspace(size_vec[1], size_vec[3], size_vec[3] - size_vec[1] + 1)
 
 img2 = np.zeros((len(x), len(y), 3))
-img = create_image(all_lines_main, layer_idx1_vec, size_vec, img2)
+img = create_image(all_lines_main, layer_idx1_vec, size_vec, img = img2, theta=theta, plot_output=True)
 
 
 print("img, along 3rd dimension:\n")
@@ -85,6 +88,8 @@ print("\n****** SAVE_IMAGE ******\n")
 
 save_image('./trial.png', img)
 
+
+print("[10,10:20]: ", img[10, 10:20])
 
 ##############################################################
 # # Show the result
