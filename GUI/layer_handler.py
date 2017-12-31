@@ -41,7 +41,9 @@ class LayerHandler(tk.Frame):
         scrollbar_shown = tk.Scrollbar(self)
         self.shown_layers.config(yscrollcommand = scrollbar_shown.set)
         scrollbar_shown.grid(row = 1, column = 3, sticky = "nse", padx = (0, 10))
-        scrollbar_shown.config(command = self.shown_layers.yview) 
+        scrollbar_shown.config(command = self.shown_layers.yview)
+
+        self.parent = parent
 
 
     # Adds or removes one or several layers from the displayed figure
@@ -66,3 +68,5 @@ class LayerHandler(tk.Frame):
 
         # Clears the selection (mouse selection over the listbox)
         listbox_from.selection_clear(0, "end")
+
+        print(len(self.parent.parent.parent.layers))

@@ -20,6 +20,8 @@ class MainPage(tk.Frame):
     def __init__(self, parent, controller, *args, **kwargs):
         tk.Frame.__init__(self, parent)
 
+        self.parent = parent
+
         # Defining which columns and rows will expand when the window will be resized
         self.grid_rowconfigure(0, weight = 0)
         self.grid_columnconfigure(0, weight = 0)

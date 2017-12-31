@@ -23,10 +23,11 @@ class MenuInterface(tk.Frame):
         self.figure_menu.add_command(label = "Reset the view to default", command =lambda:self.reset_default_view(parent), state = "disabled")
         self.menu_bar.add_cascade(label = "Figure", menu = self.figure_menu)
 
-        self.about_menu = tk.Menu(self.menu_bar, tearoff = 0)
-        self.about_menu.add_command(label = "Stuff", command = lambda:controller.popupmsg("Stuff"))
-        self.about_menu.add_command(label = "Doc", command = lambda:controller.popupmsg("Documentation!"))
-        self.menu_bar.add_cascade(label = "About", menu = self.about_menu)
+        self.help_menu = tk.Menu(self.menu_bar, tearoff = 0)
+        self.help_menu.add_command(label = "About Pear", command = lambda:controller.popupmsg("Stuff"))
+        self.help_menu.add_separator()
+        self.help_menu.add_command(label = "Pear Help", command = self.documentation)
+        self.menu_bar.add_cascade(label = "Help", menu = self.help_menu)
 
         tk.Tk.config(parent, menu = self.menu_bar)
         
@@ -41,6 +42,7 @@ class MenuInterface(tk.Frame):
         print("Opening file!")
         filename = tk.filedialog.askopenfilename(filetypes=[("META",".meta")])
         if filename:
+            # Activating all the menu options 
             self.file_menu.entryconfig("Save figure", state = "normal")
             self.file_menu.entryconfig("Close file", state = "normal")
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
@@ -57,11 +59,11 @@ class MenuInterface(tk.Frame):
                 filename_path += filename_split[i]
                 if i < len(filename_split) - 2:
                     filename_path += "."
-            print(filename_path)
-
-            # Extracting the neural network's parameters from the file
+                    
+            # Extracting the neural network's parameters from the file and creating the Layer objects out of them
             print("Loading the neural network's parameters from the TensorFlow file...")
             parent.network = read_tensorflow_file(filename_path)
+            parent.create_layers()
             print("The neural network's parameters were loaded!")
             
             settings.OPENED = True
@@ -82,8 +84,11 @@ class MenuInterface(tk.Frame):
     # Closes an opened file
     def close_file(self, parent, controller):
         # Only works if a file is opened (useless to refresh the canvas & co if no file is opened)
-        if settings.OPENED: 
+        if settings.OPENED:
             print("Closing file!")
+            parent.network = None
+            parent.layers = None
+            
             self.file_menu.entryconfig("Save figure", state = "disabled")
             self.file_menu.entryconfig("Close file", state = "disabled")
             self.figure_menu.entryconfig("Refresh the figure", state = "disabled")
@@ -100,6 +105,19 @@ class MenuInterface(tk.Frame):
     def reset_default_view(self, parent):
         print("Resetting the view to the original!")
         parent.active.plot_figure.toolbar.home()
+
+
+    def documentation(self):
+        documentation = tk.Tk()
+        def close():
+            documentation.destroy()            
+        documentation.wm_title("Documentation")
+        message = "The documentation will be written here"
+        label = ttk.Label(documentation, text = message)
+        label.grid()
+        b1 = ttk.Button(documentation, text = "Ok!", command = close)
+        b1.grid()
+        documentation.mainloop()
 
             
             

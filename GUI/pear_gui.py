@@ -7,6 +7,10 @@ from tkinter import ttk
 from tkinter import filedialog
 from matplotlib.figure import Figure
 
+from color_generation import color_generation
+
+from pear.layer import Layer
+
 
 class PearGUI(tk.Tk):
 
@@ -22,10 +26,11 @@ class PearGUI(tk.Tk):
         tk.Tk.rowconfigure(self, 0, weight = 1)
 
         # Creating the container of the window
-        container = tk.Frame(self)
+        container = tk.Frame(self)    
         container.grid(row = 0, column = 0, stick = "nsew")
         container.grid_rowconfigure(0, weight = 1)
         container.grid_columnconfigure(0, weight = 1)
+        container.parent = self # Setting the application as the parent of the main container.
 
         # Main menu
         self.menu_bar = it.MenuInterface(self, self)
@@ -47,6 +52,11 @@ class PearGUI(tk.Tk):
                 frame.grid(row = 0, column = 0, sticky = "nsew")
             
         self.show_frame(mp.MainPage)
+
+        # Will contain the network information once opened
+        self.network = None
+        # Will contains the Layer objects, built from the network information
+        self.layers = None
 
         self.bind_all_actions()
 
@@ -72,8 +82,18 @@ class PearGUI(tk.Tk):
 
     # When a file is opened or closed, refresh the label displaying  its name
     def refresh_filename(self, filename):
-        print("Refreshing the filename!")
         self.active.filename.config(text = filename)
+
+    # Once the network has been loaded, extracts the layers individually and instantiates them
+    # as Layer objects
+    def create_layers(self):
+        self.layers = []
+        for i in range(0, len(self.network)):
+            color = color_generation(i)
+            W = self.network[i][0]
+            b = self.network[i][1]
+            self.layers.append(Layer(W, b, color))
+        
 
     # When a figure is opened or closed, refresh the figure canvas
     def refresh_figure(self):
@@ -88,12 +108,26 @@ class PearGUI(tk.Tk):
             a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
         self.active.f.tight_layout()
         self.active.plot_figure.refresh(self.active, self.active.f)
-
-        
+       
 
     # Refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
     def refresh_layers(self):
         print("Refreshing the layers' listboxes!")
+        if settings.OPENED:
+            self.active.layer_lists.add_layer.config(state = "normal")
+            self.active.layer_lists.rm_layer.config(state = "normal")
+
+            # Filling the listboxes with the existing layers
+            for i in range(0, len(self.layers) - 1):
+                self.active.layer_lists.hidden_layers.insert("end", "Layer " + str(i + 1))
+            self.active.layer_lists.shown_layers.insert("end", "Layer " + str(len(self.layers)))
+            
+        else: # Deleting the layers
+            self.active.layer_lists.add_layer.config(state = "disabled")
+            self.active.layer_lists.rm_layer.config(state = "disabled")
+            self.active.layer_lists.hidden_layers.delete(0, "end")
+            self.active.layer_lists.shown_layers.delete(0, "end")
+        
 
     # Binds the important menu commands to keyboard shortcuts
     def bind_all_actions(self):
