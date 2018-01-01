@@ -23,7 +23,7 @@ class FigureHandler(tk.Frame, Figure):
         self.canvas._tkcanvas.pack(anchor = "center")
 
 
-    def refresh(self, parent, f, *args, **kwargs):
+    def refresh_canvas(self, parent, f):
         self.canvas.get_tk_widget().destroy()
         self.canvas._tkcanvas.destroy()
         self.toolbar.destroy()

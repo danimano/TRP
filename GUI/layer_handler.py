@@ -4,10 +4,14 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk
 
+from pear.get_color_for_layeridx import get_color_for_layeridx
+from pear.layer import Layer
+
 class LayerHandler(tk.Frame):
 
     def __init__(self, parent, controller, *args, **kwargs):
         tk.Frame.__init__(self, parent)
+        self.parent = parent
 
         # Adding the button that moves layers from the hidden list to the shown list
         self.add_layer = ttk.Button(self, text = "Add layer", command = lambda:self.change_layer(self.hidden_layers, self.shown_layers), state = "disabled")
@@ -43,7 +47,6 @@ class LayerHandler(tk.Frame):
         scrollbar_shown.grid(row = 1, column = 3, sticky = "nse", padx = (0, 10))
         scrollbar_shown.config(command = self.shown_layers.yview)
 
-        self.parent = parent
 
 
     # Adds or removes one or several layers from the displayed figure
@@ -68,3 +71,24 @@ class LayerHandler(tk.Frame):
 
         # Clears the selection (mouse selection over the listbox)
         listbox_from.selection_clear(0, "end")
+
+
+    # Refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
+    def refresh_layers(self, network):
+        print("Refreshing the layers' listboxes!")
+        if settings.OPENED:
+            self.add_layer.config(state = "normal")
+            self.rm_layer.config(state = "normal")
+
+            # Filling the listboxes with the existing layers
+            layer_number = len(network.get_layers())
+            for i in range(0, layer_number - 1):
+                self.hidden_layers.insert("end", "Layer " + str(i + 1))
+            self.shown_layers.insert("end", "Layer " + str(layer_number))
+            
+        else: # Deleting the layers
+            self.add_layer.config(state = "disabled")
+            self.rm_layer.config(state = "disabled")
+            self.hidden_layers.delete(0, "end")
+            self.shown_layers.delete(0, "end")        
+

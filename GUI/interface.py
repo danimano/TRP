@@ -1,9 +1,13 @@
 import settings
+from network_handler import NetworkHandler
 
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+
 from pear.reader import read_tensorflow_file
+
+from about_pear import AboutPear
 
 class MenuInterface(tk.Frame):
 
@@ -18,13 +22,13 @@ class MenuInterface(tk.Frame):
         self.menu_bar.add_cascade(label = "File", menu = self.file_menu)
 
         self.figure_menu = tk.Menu(self.menu_bar, tearoff = 0)
-        self.figure_menu.add_command(label = "Refresh the figure", command = controller.refresh_figure, state = "disabled", accelerator = "Ctrl + R")
-        self.figure_menu.add_command(label = "Set the view to \"Automatic\"", command = lambda:controller.popupmsg("Not supported yet!"), state = "disabled")
+        self.figure_menu.add_command(label = "Refresh the figure", command = parent.active.refresh_figure, state = "disabled", accelerator = "Ctrl + R")
+        self.figure_menu.add_command(label = "Set the view to \"Automatic\"", command = lambda:print("Not supported yet!"), state = "disabled")
         self.figure_menu.add_command(label = "Reset the view to default", command =lambda:self.reset_default_view(parent), state = "disabled")
         self.menu_bar.add_cascade(label = "Figure", menu = self.figure_menu)
 
         self.help_menu = tk.Menu(self.menu_bar, tearoff = 0)
-        self.help_menu.add_command(label = "About Pear", command = lambda:controller.popupmsg("Stuff"))
+        self.help_menu.add_command(label = "About Pear", command = self.about)
         self.help_menu.add_separator()
         self.help_menu.add_command(label = "Pear Help", command = self.documentation)
         self.menu_bar.add_cascade(label = "Help", menu = self.help_menu)
@@ -48,30 +52,18 @@ class MenuInterface(tk.Frame):
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
             self.figure_menu.entryconfig("Set the view to \"Automatic\"", state = "normal")
             self.figure_menu.entryconfig("Reset the view to default", state = "normal")
-            parent.active.refresh.config(state = "normal")
-
-            # Parsing the filename string
-            # We want an absolute path
-            # We want to withdraw the ".meta" extension while keeping the possible "." of the filename
-            filename_split = filename.split(".")
-            filename_path = ""
-            for i in range(0, len(filename_split) - 1):
-                filename_path += filename_split[i]
-                if i < len(filename_split) - 2:
-                    filename_path += "."
+            parent.active.activate_refresh()
                     
             # Extracting the neural network's parameters from the file and creating the Layer objects out of them
             print("Loading the neural network's parameters from the TensorFlow file...")
-            parent.network = read_tensorflow_file(filename_path)
-            parent.create_layers()
-            print("The neural network's parameters were loaded!")
+            parent.network = NetworkHandler(filename)
             
             settings.OPENED = True
 
             # Displaying the filename without the whole path nor its extension
-            controller.refresh_filename("Visualizing \"" + filename_path.split("/")[-1] + "\"")
-            controller.refresh_layers()
-            controller.refresh_figure()
+            parent.active.refresh_filename("Visualizing \"" + parent.network.get_filename().split("/")[-1] + "\"")
+            parent.active.layer_lists.refresh_layers(parent.network)
+            parent.active.refresh_figure()
             
 
     # Saves the currently displayed figure
@@ -87,20 +79,19 @@ class MenuInterface(tk.Frame):
         if settings.OPENED:
             print("Closing file!")
             parent.network = None
-            parent.layers = None
             
             self.file_menu.entryconfig("Save figure", state = "disabled")
             self.file_menu.entryconfig("Close file", state = "disabled")
             self.figure_menu.entryconfig("Refresh the figure", state = "disabled")
             self.figure_menu.entryconfig("Set the view to \"Automatic\"", state = "disabled")
             self.figure_menu.entryconfig("Reset the view to default", state = "disabled")
-            parent.active.refresh.config(state = "disabled")
+            parent.active.deactivate_refresh()
             settings.OPENED = False
             parent.active.f = settings.FIGURE
             
-            controller.refresh_filename(settings.FILENAME)
-            controller.refresh_layers()
-            controller.refresh_figure()
+            parent.active.refresh_filename(settings.FILENAME)
+            parent.active.layer_lists.refresh_layers(parent.network)
+            parent.active.refresh_figure()
 
     def reset_default_view(self, parent):
         print("Resetting the view to the original!")
@@ -119,6 +110,14 @@ class MenuInterface(tk.Frame):
         b1.grid()
         documentation.mainloop()
 
-            
-            
-            
+    def about(self):
+        about = tk.Tk()
+        def close():
+            about.destroy()            
+        about.wm_title("About Pear v1.0")
+        message = "The documentation will be written here"
+        label = ttk.Label(about, text = message)
+        label.grid()
+        b1 = ttk.Button(about, text = "Ok!", command = close)
+        b1.grid()
+        about.mainloop()            

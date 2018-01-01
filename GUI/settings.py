@@ -8,7 +8,7 @@ def init():
     REMOVE = "images/remove-icon.png"
     REFRESH = "images/refresh-icon.png"
     FILENAME = "No file to visualize"
-    FIGURE = Figure(figsize = (5, 5), dpi = 100)
+    FIGURE = Figure()
     OPENED = False
     
     
