@@ -1,12 +1,14 @@
 import numpy as np
-from pear.line import Line
+from line import Line
+from apply_nonlinearity import *
 
 # The boundary can not be on the first column or row of the output h - is it a problem?...
 
 
-def get_lines_from_layer_output(h):
+def get_lines_from_layer_output(h, linecolor=[1,1,1]):
     """
-    h: output of a layer
+    -- h: output of a layer
+    -- linecolor: color of the line (color of the layer in which this line is)
     From the output, calculate the boundary lines.
     Return a list of lines, containing a line object for each neuron in the layer.
     If the layer contained m neuron, lines will be m long.
@@ -16,6 +18,7 @@ def get_lines_from_layer_output(h):
     # print info - debug
     print("\n--Function get_lines_from_layer_output starts...\n")
 
+
     # Plan: where the sign changes, we have the boundary
 
     # Get the sign for each element
@@ -23,7 +26,6 @@ def get_lines_from_layer_output(h):
     # Create an array to store if the sign changes at a given point of the input or not
     h_conv = np.zeros_like(signed_h)
 
-    # This is a kind of convolution with [1 1] and [1,1]' kernels, but I could not find 2d convolution in numpy
     # This for loops could be merged and optimized...
 
     # For each neuron separately
@@ -66,7 +68,7 @@ def get_lines_from_layer_output(h):
     # For each neuron (channel) find the zero elements in h_conv. Convert them to Line objects,
     #   and append these Line objects ordered to the lines list
     for k in range(0, h_conv.shape[2]):
-        lines.append(Line(np.array(np.where(h_conv[:,:,k] == 0))))
+        lines.append(Line(np.array(np.where(h_conv[:,:,k] == 0)), _color=linecolor))
 
     # print info - debug
     print("\n--Function get_lines_from_layer_output ends...\n")

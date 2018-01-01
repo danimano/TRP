@@ -7,9 +7,8 @@ from tkinter import ttk
 from tkinter import filedialog
 from matplotlib.figure import Figure
 
-from color_generation import color_generation
-
 from pear.layer import Layer
+from pear.get_color_for_layeridx import get_color_for_layeridx
 
 
 class PearGUI(tk.Tk):
@@ -89,7 +88,7 @@ class PearGUI(tk.Tk):
     def create_layers(self):
         self.layers = []
         for i in range(0, len(self.network)):
-            color = color_generation(i)
+            color = get_color_for_layeridx(i)
             W = self.network[i][0]
             b = self.network[i][1]
             self.layers.append(Layer(W, b, color))

@@ -68,5 +68,3 @@ class LayerHandler(tk.Frame):
 
         # Clears the selection (mouse selection over the listbox)
         listbox_from.selection_clear(0, "end")
-
-        print(len(self.parent.parent.parent.layers))

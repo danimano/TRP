@@ -1,22 +1,24 @@
 import numpy as np
-from pear.layer import Layer
-from pear.apply_nonlinearity import apply_nonlinearity
+from layer import Layer
+from apply_nonlinearity import apply_nonlinearity
+from sigmoid import *
 
 # Correctness should be checked by someone else as well
 # there is no kind of error handling so far
 
 
-def calculate_output(theta, size, layer_idx):
+def calculate_output(theta, res, layer_idx):
     """Calculates the  output of the given layer for all the possible inputs of the network in size.
 
-        theta ~ ([layer_i]) -- Ordered list of layers, i goes from 0 until at least layer_idx.
+        theta ~ ([layer_i]) -- Ordered list of layers. All of them
                                Weight matrices and bias vectors of the network.
         layer_idx -- index of the layer, for which we want to determine the output
-        size -- The range of the input we are working with ([s_x1, s_y1, s_x2, s_y2]).
+        res -- resolution of the plane
 
         The output is calculated in the following way:
-            h_0 = W_0*x+b_0
-            h_i = W_i*applyNonLinearity(W_{i-1}*h_{i-1}+b_{i-1})+b_i   for i = 1..layer_idx
+            h_0 = apply_nonlinearity(W_0*x+b_0)
+            h_i = W_i*h_{i-1}+b_i   for i = 1..layer_idx
+            for the last layer: apply_sigmoid
 
         Returns the output(s) of the queried layer in a 3D array, where each plane represents the output of one neuron.
             (If the layer has n_i neuron, the size of the output will be (s_x2-s_x1+1) * (s_y2-s_y1+1) * n_i).
@@ -26,13 +28,16 @@ def calculate_output(theta, size, layer_idx):
     print("--function calculate_output starts...")
     # TODO - Missing test if we really have enough (and the right) layer in theta and in layer_idx
     #   we can test the size of the weight matrices eg
+    if layer_idx >= len(theta):
+        print("ERROR: layer_idx exceeds network")
+        return
+
     # TODO if the size is in wrong order (eg s_x1 > s_x2)
 
     # generate input field - it is always 2 dimensional
-    # TODO determine the resolution - right now it is 1 pixel.
     #   If the images have the size [-1,1]^2 then needs to be refine
-    x = np.linspace(size[0], size[2], size[2]-size[0]+1)
-    y = np.linspace(size[1], size[3], size[3]-size[1]+1)
+    x = np.linspace(-1,1, res[0])
+    y = np.linspace(-1,1, res[1])
 
     # initialize h_new for the first layer
     h_new = np.zeros((theta[0].n_input, len(x)*len(y)))
@@ -56,10 +61,13 @@ def calculate_output(theta, size, layer_idx):
         # Print the output of the layer before ReLU - debug
         print("Output of layer ", layer_i, "before nonlinearity:\n",h_new)
 
-        # If it is not the output of the layer_idxth layer: apply the nonlinearity
-        if layer_i != layer_idx:
+        # If it is not the output layer: apply the nonlinearity
+        if layer_i != len(theta)-1:
             apply_nonlinearity(h_new)
-
+        # If it is the last layer
+        else:
+            print("HERE")
+            h_new = sigmoid(h_new)
         # Clear the input (it will be overwritten in the next iteration)
         del h_old
 
