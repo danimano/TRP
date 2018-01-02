@@ -1,6 +1,6 @@
-from get_lines_from_layer_output import*
-from calculate_output import calculate_output
-from get_color_for_layeridx import *
+from pear.get_lines_from_layer_output import*
+from pear.calculate_output import calculate_output
+from pear.get_color_for_layeridx import *
 
 
 def get_all_lines(theta, res, layer_idx):

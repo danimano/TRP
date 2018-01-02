@@ -1,5 +1,5 @@
 import numpy as np
-from line import Line
+from pear.line import Line
 
 # Why are the imports unused?...
 

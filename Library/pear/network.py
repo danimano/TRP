@@ -1,6 +1,7 @@
 from pear.reader import read_tensorflow_file
 from pear.get_color_for_layeridx import get_color_for_layeridx
 from pear.layer import Layer
+import numpy as np
 
 class Network:
     """Contains the structure a neural network given as an input."""
@@ -22,8 +23,8 @@ class Network:
         layers = []
         for i in range(0, len(theta)):
             color = get_color_for_layeridx(i)
-            W = theta[i][0]
-            b = theta[i][1]
+            W = np.transpose(theta[i][0])
+            b = np.transpose(theta[i][1])
             layers.append(Layer(W, b, color))
         return layers
 

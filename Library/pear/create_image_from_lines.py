@@ -1,8 +1,8 @@
 import numpy as np
-from draw_line import draw_line
-from calculate_output import *
-from layer import *
-from sigmoid import *
+from pear.draw_line import draw_line
+from pear.calculate_output import *
+from pear.layer import *
+from pear.sigmoid import *
 
 
 def create_image_from_lines(line_list, layer_indices, res, img=[], theta=[] , plot_output=False):
@@ -40,6 +40,7 @@ def create_image_from_lines(line_list, layer_indices, res, img=[], theta=[] , pl
         img = np.zeros((len(x),len(y),3))
     # If the image is grayscale (has only 1 channel)
     elif len(img.shape) == 2 or img.shape[2] == 1:
+        img = np.transpose(img)
         img = img[:, :, np.newaxis]
         img = np.tile(img, (1, 1, 3))
 
@@ -52,4 +53,5 @@ def create_image_from_lines(line_list, layer_indices, res, img=[], theta=[] , pl
                 # draw the line to the image
                 draw_line(img, line_list[layer_indices[i]][j])
 
+    img = np.transpose(img, (1, 0, 2))
     return img

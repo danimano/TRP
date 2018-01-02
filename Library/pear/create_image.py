@@ -1,5 +1,5 @@
-from get_all_lines import *
-from create_image_from_lines import *
+from pear.get_all_lines import *
+from pear.create_image_from_lines import *
 
 def create_image(theta, layer_indices, res, img=[], plot_output=False):
     """Generates the image with the boundary lines.

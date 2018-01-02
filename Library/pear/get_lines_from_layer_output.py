@@ -1,6 +1,6 @@
 import numpy as np
-from line import Line
-from apply_nonlinearity import *
+from pear.line import Line
+from pear.apply_nonlinearity import *
 
 # The boundary can not be on the first column or row of the output h - is it a problem?...
 
