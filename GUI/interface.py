@@ -1,11 +1,11 @@
 import settings
-from network_handler import NetworkHandler
 
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 
 from pear.reader import read_tensorflow_file
+from pear.network import Network
 
 from about_pear import AboutPear
 
@@ -55,8 +55,18 @@ class MenuInterface(tk.Frame):
             parent.active.activate_refresh()
                     
             # Extracting the neural network's parameters from the file and creating the Layer objects out of them
+            def parse_filename(filename):
+                filename_split = filename.split(".")
+                filename_path = ""
+                for i in range(0, len(filename_split) - 1):
+                    filename_path += filename_split[i]
+                    if i < len(filename_split) - 2:
+                        filename_path += "."
+                return filename_path
+
+            filename_path = parse_filename(filename)
             print("Loading the neural network's parameters from the TensorFlow file...")
-            parent.network = NetworkHandler(filename)
+            parent.network = Network(filename_path)
             
             settings.OPENED = True
 
