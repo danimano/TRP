@@ -82,9 +82,9 @@ class LayerHandler(tk.Frame):
 
             # Filling the listboxes with the existing layers
             layer_number = len(network.get_layers())
-            for i in range(0, layer_number - 1):
+            for i in range(0, layer_number - 2):
                 self.hidden_layers.insert("end", "Layer " + str(i + 1))
-            self.shown_layers.insert("end", "Layer " + str(layer_number))
+            self.shown_layers.insert("end", "Layer " + str(layer_number - 1))
             
         else: # Deleting the layers
             self.add_layer.config(state = "disabled")

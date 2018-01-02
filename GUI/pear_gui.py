@@ -68,13 +68,13 @@ class PearGUI(tk.Tk):
     # Binds the important menu commands to keyboard shortcuts
     def bind_all_actions(self):
         def open_file_shortcut(event):
-            return self.menu_bar.open_file(self, self)
+            return self.menu_bar.open_file()
 
         def close_file_shortcut(event):
-            return self.menu_bar.close_file(self, self)
+            return self.menu_bar.close_file()
 
         def quit_shortcut(event):
-            return self.menu_bar.quit(self)
+            return self.menu_bar.quit()
 
         def save_figure_shortcut(event):
             return self.menu_bar.save_figure(self)

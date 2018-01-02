@@ -1,6 +1,7 @@
 import settings
 import figure_handler as fh
 import layer_handler as lh
+import background_handler as bh
 
 import tkinter as tk
 from tkinter import ttk
@@ -34,10 +35,13 @@ class MainPage(tk.Frame):
         self.filename = ttk.Label(self, text = settings.FILENAME, font = settings.FONT)
         self.filename.grid(row = 0, column = 0, columnspan = 3, pady = 10)
 
-        # Checkbox to determine whether to use the background approximation as the background
-        self.bg_checkbox = ttk.Checkbutton(self, text = "Use the approximated image as background")
-        self.bg_checkbox.state(["!alternate"])
-        self.bg_checkbox.grid(row = 1, column = 0, pady = 3)
+##        # Checkbox to determine whether to use the background approximation as the background
+##        self.bg_checkbox = ttk.Checkbutton(self, text = "Use the approximated image as background")
+##        self.bg_checkbox.state(["!alternate"])
+##        self.bg_checkbox.grid(row = 1, column = 0, pady = 3)
+
+        self.bg_handler = bh.BackgroundHandler(self, self)
+        self.bg_handler.grid(row = 1, column = 0, columnspan = 2, pady = 3, padx = 20, sticky = "w")
 
         # Frame with listboxes to choose which layers to display
         self.layer_lists = lh.LayerHandler(self, self)
@@ -76,9 +80,9 @@ class MainPage(tk.Frame):
     def refresh_figure(self):
         print("Refreshing figure!")
         self.f.clear()
-        if self.bg_checkbox.instate(["selected"]):
+        if self.bg_handler.bg_checkbox.instate(["selected"]):
             print("Use approximated image as background!")
-        else:
+        elif self.bg_handler.img_checkbox.instate(["selected"]):
             print("Plain background!")
         if settings.OPENED:
             a = self.f.add_subplot(111)

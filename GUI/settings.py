@@ -1,7 +1,7 @@
 from matplotlib.figure import Figure
 
 def init():
-    global ICON, FONT, ADD, REMOVE, REFRESH, FILENAME, FIGURE, OPENED
+    global ICON, FONT, ADD, REMOVE, REFRESH, FILENAME, FIGURE, OPENED, BACKGROUND
     ICON = "images/icon.ico"
     FONT= ("Georgia", 12)
     ADD = "images/add-icon.png"
@@ -10,6 +10,7 @@ def init():
     FILENAME = "No file to visualize"
     FIGURE = Figure()
     OPENED = False
+    BACKGROUND = "No file loaded..."
     
     
     
