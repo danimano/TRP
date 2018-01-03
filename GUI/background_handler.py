@@ -89,5 +89,4 @@ class BackgroundHandler(tk.Frame):
         description = "When this option is checked, the decision boundaries of the chosen layers to be displayed will be displayed on a given image rather than on a blank background. To do so, you will need to load an image from your disk using the \"Browse image\" button that appears when this option is checked."
         tk.messagebox.showinfo("Details", description)
 
-    def refresh_figure(self):
-        print("Refresh figure!")
+    

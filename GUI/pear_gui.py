@@ -80,7 +80,7 @@ class PearGUI(tk.Tk):
             return self.menu_bar.save_figure(self)
 
         def refresh_figure_shortcut(event):
-            return self.active.bg_handler.refresh_figure()
+            return self.active.plot_figure.refresh_figure()
 
         self.bind("<Control-Key-o>", open_file_shortcut)
         self.bind("<Control-Key-w>", close_file_shortcut)
