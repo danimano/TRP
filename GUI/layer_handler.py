@@ -47,6 +47,12 @@ class LayerHandler(tk.Frame):
         scrollbar_shown.grid(row = 1, column = 3, sticky = "nse", padx = (0, 10))
         scrollbar_shown.config(command = self.shown_layers.yview)
 
+        # Adding some info about why the last layer does not appear in the list
+        info_last_layer = "The last layer of the network does not appear in the layers' lists. This is due to the fact that we are applying a sigmoïd function on the last layer rather than the rectified liner unit operator. The last layer thus does not have any boundary decision to display."
+        font = ("", 8, "italic")
+        self.info_message = tk.Message(self, text = info_last_layer, font = font, width = 298)
+        self.info_message.grid(row = 2, column = 0, columnspan = 5)
+
 
 
     # Adds or removes one or several layers from the displayed figure
@@ -63,7 +69,7 @@ class LayerHandler(tk.Frame):
         for i in range(0, listbox_to.size()):
            l.append(listbox_to.get(i)) 
         listbox_to.delete(0, "end")
-        l.sort(key=lambda item: (len(item), item)) # Sort by length of the string, then by alphabetical order
+        l.sort(key = lambda item: (len(item), item)) # Sort by length of the string, then by alphabetical order
 
         # Inserts the ordered layers in the list they are going to
         for item in l:
@@ -90,5 +96,12 @@ class LayerHandler(tk.Frame):
             self.add_layer.config(state = "disabled")
             self.rm_layer.config(state = "disabled")
             self.hidden_layers.delete(0, "end")
-            self.shown_layers.delete(0, "end")        
+            self.shown_layers.delete(0, "end")
+
+    def get_layers_to_draw(self):
+        layers_to_draw = []
+        current_items = self.shown_layers.get(0, "end")
+        for item in current_items:
+            layers_to_draw.append(int(item.split(" ")[-1]) - 1)
+        return layers_to_draw
 

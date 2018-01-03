@@ -35,11 +35,7 @@ class MainPage(tk.Frame):
         self.filename = ttk.Label(self, text = settings.FILENAME, font = settings.FONT)
         self.filename.grid(row = 0, column = 0, columnspan = 3, pady = 10)
 
-##        # Checkbox to determine whether to use the background approximation as the background
-##        self.bg_checkbox = ttk.Checkbutton(self, text = "Use the approximated image as background")
-##        self.bg_checkbox.state(["!alternate"])
-##        self.bg_checkbox.grid(row = 1, column = 0, pady = 3)
-
+        # Background handler: makes sure that both checkboxes cannot be checked at the same time and potential loads a background image
         self.bg_handler = bh.BackgroundHandler(self, self)
         self.bg_handler.grid(row = 1, column = 0, columnspan = 2, pady = 3, padx = 20, sticky = "w")
 
@@ -53,7 +49,7 @@ class MainPage(tk.Frame):
         self.scaling_checkbox.grid(row = 3, column = 0, sticky = "s")
 
         # Displaying the "Refresh the image" button
-        self.refresh = ttk.Button(self, text = "Refresh the figure", command = self.refresh_figure, state = "disabled")
+        self.refresh = ttk.Button(self, text = "Refresh the figure", command = self.bg_handler.refresh_figure, state = "disabled")
         refresh_icon = ImageTk.PhotoImage(file = settings.REFRESH)
         self.refresh.config(image = refresh_icon, compound = "right")
         self.refresh.icon = refresh_icon
@@ -75,15 +71,30 @@ class MainPage(tk.Frame):
 
     def deactivate_refresh(self):
         self.refresh.config(state = "disabled")
+        
 
-    # When a figure is opened or closed, refresh the figure canvas
-    def refresh_figure(self):
-        print("Refreshing figure!")
+    # When a figure is opened or closed, refresh the figure canvas accordingly
+    def reset_figure(self):
         self.f.clear()
+        print("Reset figure")
+
+        layer_to_print = self.bg_handler.get_layers_to_draw()
+        
         if self.bg_handler.bg_checkbox.instate(["selected"]):
             print("Use approximated image as background!")
+            
         elif self.bg_handler.img_checkbox.instate(["selected"]):
-            print("Plain background!")
+            print("Image as background!")
+            if self.bg_handler.background == None:
+                message = "No image background was loaded. The figure will be generated on a blank background. Please select an image as your background next time."
+                tk.messagebox.showwarning("No background loaded", message)
+
+            else:
+                print("Perform computation")
+
+        else:
+            print("Blank background!")
+                
         if settings.OPENED:
             a = self.f.add_subplot(111)
             a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])

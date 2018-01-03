@@ -24,7 +24,7 @@ class MenuInterface(tk.Frame):
         self.menu_bar.add_cascade(label = "File", menu = self.file_menu)
 
         self.figure_menu = tk.Menu(self.menu_bar, tearoff = 0)
-        self.figure_menu.add_command(label = "Refresh the figure", command = self.parent.active.refresh_figure, state = "disabled", accelerator = "Ctrl + R")
+        self.figure_menu.add_command(label = "Refresh the figure", command = self.parent.active.bg_handler.refresh_figure, state = "disabled", accelerator = "Ctrl + R")
         self.figure_menu.add_command(label = "Set the view to \"Automatic\"", command = lambda:print("Not supported yet!"), state = "disabled")
         self.figure_menu.add_command(label = "Reset the view to default", command =lambda:self.reset_default_view(parent), state = "disabled")
         self.menu_bar.add_cascade(label = "Figure", menu = self.figure_menu)
@@ -75,7 +75,8 @@ class MenuInterface(tk.Frame):
             # Displaying the filename without the whole path nor its extension
             self.parent.active.refresh_filename("Visualizing \"" + self.parent.network.get_filename().split("/")[-1] + "\"")
             self.parent.active.layer_lists.refresh_layers(self.parent.network)
-            self.parent.active.refresh_figure()
+            self.parent.active.layer_lists.get_layers_to_draw()
+            self.parent.active.reset_figure()
             
 
     # Saves the currently displayed figure
@@ -103,7 +104,7 @@ class MenuInterface(tk.Frame):
             
             self.parent.active.refresh_filename(settings.FILENAME)
             self.parent.active.layer_lists.refresh_layers(self.parent.network)
-            self.parent.active.refresh_figure()
+            self.parent.active.reset_figure()
 
     def reset_default_view(self, parent):
         print("Resetting the view to the original!")
