@@ -44,13 +44,13 @@ def create_image_from_lines(line_list, layer_indices, res=None, img=None, networ
     # If plot_output is False
     else:
         # If the image is not given -> create it with the given size (each element is 0)
-        if img == []:
+        if img == None:
             # debug branch
             if plot_output:
                 print("plot_output is true, but theta is empty")
             x = np.linspace(-1,1, res[0])
             y = np.linspace(-1,1, res[1])
-            img = np.zeros((len(x),len(y),3))
+            img = np.ones((len(x), len(y), 3))
         # If the image is grayscale (has only 1 channel)
         else:
             # If the image is grayscale (has only 1 channel)
