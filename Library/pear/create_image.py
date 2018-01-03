@@ -1,5 +1,5 @@
-from get_all_lines import *
-from create_image_from_lines import *
+from pear.get_all_lines import *
+from pear.create_image_from_lines import *
 
 
 def create_image(network, layer_indices, res=None, img=None, plot_output=False):

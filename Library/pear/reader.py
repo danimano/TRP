@@ -2,21 +2,20 @@ import numpy as np
 import tensorflow as tf
 
 
-def read_tensorflow_file(fname):    
-
+def read_tensorflow_file(fname):
     new_graph = tf.Graph()
 
-    with tf.Session(graph=new_graph) as sess:        
-        saver = tf.train.import_meta_graph(fname+'.meta')
+    with tf.Session(graph=new_graph) as sess:
+        saver = tf.train.import_meta_graph(fname + '.meta')
         graph = tf.get_default_graph()
 
         tf.train.Saver().restore(sess, fname)
-        theta = []#[[0,0]]*int(graph.get_collection_ref('trainable_variables').__len__()/2)
+        theta = []  # [[0,0]]*int(graph.get_collection_ref('trainable_variables').__len__()/2)
         tmp = []
-        tmpW = [0]*int(graph.get_collection_ref('trainable_variables').__len__()/2)
-        tmpb = [0]*int(graph.get_collection_ref('trainable_variables').__len__()/2)
-        
-        #print(theta)
+        tmpW = [0] * int(graph.get_collection_ref('trainable_variables').__len__() / 2)
+        tmpb = [0] * int(graph.get_collection_ref('trainable_variables').__len__() / 2)
+
+        # print(theta)
         file_writer = tf.summary.FileWriter(fname, sess.graph)
 
         for x in graph.get_collection_ref('trainable_variables'):
@@ -31,13 +30,13 @@ def read_tensorflow_file(fname):
             # End of legacy
             if x.name[0] == 'W' or x.name[0] == 'b':
                 if x.name[0] == 'W':
-                    tmpW[int(x.name[1:-2])-1] = x.eval(sess)
+                    tmpW[int(x.name[1:-2]) - 1] = x.eval(sess)
                 else:
-                    tmpb[int(x.name[1:-2])-1] = x.eval(sess)
+                    tmpb[int(x.name[1:-2]) - 1] = x.eval(sess)
     if tmpW.__len__() != tmpb.__len__():
         print("Missing data!")
     for x in range(tmpW.__len__()):
-        theta += [(tmpW[x],tmpb[x])]
+        theta += [(tmpW[x], tmpb[x])]
     return theta
 
 

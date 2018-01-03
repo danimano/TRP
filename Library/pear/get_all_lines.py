@@ -1,31 +1,22 @@
 from pear.get_lines_from_layer_output import*
-from pear.calculate_output import calculate_output
 from pear.get_color_for_layeridx import *
+from pear.network import *
 
 
-def get_all_lines(theta, res, layer_idx):
-    """Stores and returns an array containing all the boundary lines for all layers until layer_idx.
-        theta ~ ([layer_i]) -- Ordered list of layers. All of them.
-                               Weight matrices and bias vectors of the network.
-        layer_idx -- index of the layer, for which we want to determine the output
-        res -- The resolution of the input we are working with ([res1, res2]).
+def get_all_lines(network):
+    """Stores and returns an array containing all the boundary lines for all layers.
+       network: network object (containing the outputs of the layers in itself)
     Output: If we had n layers: n long list. The list contains lists of lines.
     The list ith element is a list, containing the boundary lines for the ith layer (if the ith layer contained
         m_i neurons, the list is m_i long.)
     """
-    if layer_idx >= len(theta):
-        raise ValueError("ERROR in get_all_lines: layer index exceeds the number of layers in the network.")
-
-    # TODO this can be a part, where we recalculate a layer's output again and again instead of storing it...
-    # but right now this is how it works
-
+    all_output = network.get_all_output()
     all_lines = []
-    # for each layer until layer_idx (or until the last-1th layer)
-    for i in range(0, min(layer_idx+1, len(theta)-1)):
-        # calculate the output of the layer
-        out_tmp = calculate_output(theta, res, i)
+
+    # For each layer
+    for i in range(len(all_output)):
         # get the lines from it
-        lines = get_lines_from_layer_output(out_tmp, get_color_for_layeridx(i))
+        lines = get_lines_from_layer_output(network, i, get_color_for_layeridx(i))
         all_lines.append(list(lines))
 
     return all_lines

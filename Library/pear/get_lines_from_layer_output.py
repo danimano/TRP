@@ -1,13 +1,15 @@
 import numpy as np
 from pear.line import Line
 from pear.apply_nonlinearity import *
+from pear.network import *
 
 # The boundary can not be on the first column or row of the output h - is it a problem?...
 
 
-def get_lines_from_layer_output(h, linecolor=[1,1,1]):
+def get_lines_from_layer_output(network, layer_idx, linecolor=[1,1,1]):
     """
-    -- h: output of a layer
+    -- network: network object (containing the outputs of its layer)
+    -- layer_idx: index, indicates that from which layer we want to get the lines
     -- linecolor: color of the line (color of the layer in which this line is)
     From the output, calculate the boundary lines.
     Return a list of lines, containing a line object for each neuron in the layer.
@@ -22,6 +24,12 @@ def get_lines_from_layer_output(h, linecolor=[1,1,1]):
     # Plan: where the sign changes, we have the boundary
 
     # Get the sign for each element
+    all_output = network.get_all_output()
+    if layer_idx > len(all_output):
+        raise ValueError("Error in get_lines_from_layer_output: layer index exceeds the size of the network")
+
+    # Get the output of the layer
+    h = all_output[layer_idx]
     signed_h = np.sign(h)
     # Create an array to store if the sign changes at a given point of the input or not
     h_conv = np.zeros_like(signed_h)

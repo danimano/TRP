@@ -1,21 +1,31 @@
 from pear.reader import read_tensorflow_file
 from pear.get_color_for_layeridx import get_color_for_layeridx
 from pear.layer import Layer
+from pear.calculate_all_output import calculate_all_output
 import numpy as np
+
 
 class Network:
     """Contains the structure a neural network given as an input."""
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         """Create a new NetworkHandler object.
-        A NetworkHandler object has three attributes:
+        A NetworkHandler object has four attributes:
         - a name "filename" (here, its full path without any extension)
         - parameters "theta" containing, for each layer, weight and bias
-        - a list of layers "layers" containing Lyaer objects that correspond to a layer
+        - a list of layers "layers" containing Layer objects that correspond to a layer
+        - all_outputs: a list containing the outputs of each layer - if it is calculated
         """
-        self.__filename = filename
-        self.__theta = read_tensorflow_file(self.__filename)
-        self.__layers = self.create_layers(self.__theta)
+        if filename:
+            self.__filename = filename
+            self.__theta = read_tensorflow_file(self.__filename)
+            self.__layers = self.create_layers(self.__theta)
+            self.__all_output = []
+        else:
+            self.__filename = ""
+            self.__theta = []
+            self.__layers = []
+            self.__all_output = []
 
     def create_layers(self, theta):
         """Given the parameters "theta" of a network, extract the layers and build Layer objects from them.
@@ -28,6 +38,9 @@ class Network:
             layers.append(Layer(W, b, color))
         return layers
 
+    def calculate_all_output(self, res):
+        self.__all_output = calculate_all_output(self.__layers, res)
+
     def get_filename(self):
         return self.__filename
 
@@ -36,3 +49,9 @@ class Network:
 
     def get_layers(self):
         return self.__layers
+
+    def set_layer(self, layers):
+        self.__layers = layers
+
+    def get_all_output(self):
+        return self.__all_output
