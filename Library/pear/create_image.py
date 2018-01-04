@@ -23,7 +23,8 @@ def create_image(network, layer_indices, res=None, img=None, plot_output=False):
     # Calculate the output of the network for the specified resolution
     network.calculate_all_output(res)
     # Get the boundary lines
-    all_the_lines = get_all_lines(network)
+    network.compute_all_lines()
+    all_the_lines = network.get_lines()
     # Return the created image
     return create_image_from_lines(all_the_lines, layer_indices, res=res, img=img, network=network, plot_output=plot_output)
 
