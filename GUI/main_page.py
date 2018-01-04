@@ -31,6 +31,7 @@ class MainPage(tk.Frame):
         self.grid_rowconfigure(2, weight = 1)
         self.grid_rowconfigure(3, weight = 1)
         self.grid_rowconfigure(4, weight = 1)
+        self.grid_rowconfigure(5, weight = 1)
               
         # Name of the currently opened file
         self.filename = ttk.Label(self, text = settings.FILENAME, font = settings.FONT)
@@ -53,7 +54,11 @@ class MainPage(tk.Frame):
         refresh_icon = ImageTk.PhotoImage(file = settings.REFRESH)
         self.refresh.config(image = refresh_icon, compound = "right")
         self.refresh.icon = refresh_icon
-        self.refresh.grid(row = 4, column = 0, sticky = "n", ipadx = 20, ipady = 10)
+        self.refresh.grid(row = 4, column = 0, sticky = "n", pady = 0, ipadx = 20, ipady = 10)
+
+        # Label displayed when the figure is being refreshed (loading label)
+        self.refreshing = tk.Label(self, text = "")
+        self.refreshing.grid(row = 5, column = 0, pady = 30)
         
         
     # When a file is opened or closed, refresh the label displaying its name
@@ -69,11 +74,17 @@ class MainPage(tk.Frame):
 
     # When a figure is opened or closed, refresh the figure canvas accordingly
     def reset_figure(self, network):
-        
         if settings.OPENED:
             self.plot_figure.refresh_figure(network)
         else:
             self.plot_figure.f.clear()
             self.plot_figure.f.tight_layout()
             self.plot_figure.canvas.draw()
+
+    def update_refreshing_label(self, status):
+        if status == 1:
+            self.refreshing.config(text = "Refreshing...")
+        else:
+            self.refreshing.config(text = "")
+        self.refreshing.update()
 

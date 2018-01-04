@@ -18,7 +18,8 @@ class MenuInterface(tk.Frame):
         self.menu_bar = tk.Menu(parent)
         self.file_menu = tk.Menu(self.menu_bar, tearoff = 0)
         self.file_menu.add_command(label = "Open file", command = self.open_file, accelerator = "Ctrl + O")
-        self.file_menu.add_command(label = "Save figure", command = self.save_figure, state = "disabled", accelerator = "Ctrl + S")
+        self.file_menu.add_command(label = "Save image", command = self.save_image, state = "disabled", accelerator = "Ctrl + S")
+        self.file_menu.add_command(label = "Save figure", command = self.save_figure, state = "disabled", accelerator = "Ctrl + Shift + S") 
         self.file_menu.add_command(label = "Close file", command = self.close_file, state = "disabled", accelerator = "Ctrl + W")
         self.file_menu.add_separator()
         self.file_menu.add_command(label = "Exit", command = self.quit, accelerator = "Ctrl + Q")
@@ -52,6 +53,7 @@ class MenuInterface(tk.Frame):
                 self.close_file()
             
             # Activating all the menu options 
+            self.file_menu.entryconfig("Save image", state = "normal")
             self.file_menu.entryconfig("Save figure", state = "normal")
             self.file_menu.entryconfig("Close file", state = "normal")
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
@@ -83,12 +85,17 @@ class MenuInterface(tk.Frame):
             
 
     # Saves the currently displayed figure
-    def save_figure(self):
+    def save_image(self):
         if settings.OPENED:
             print("Saving file!")
             filename = tk.filedialog.asksaveasfilename(filetypes=[('PNG', ".png")])
             if filename:
                 save_image(filename, self.parent.active.plot_figure.image)
+
+
+    def save_figure(self):
+        if settings.OPENED:
+            self.parent.active.plot_figure.toolbar.save_figure()
         
 
     # Closes an opened file
@@ -99,6 +106,7 @@ class MenuInterface(tk.Frame):
             self.parent.network = None
             self.parent.active.plot_figure.image = None
             
+            self.file_menu.entryconfig("Save image", state = "disabled")
             self.file_menu.entryconfig("Save figure", state = "disabled")
             self.file_menu.entryconfig("Close file", state = "disabled")
             self.figure_menu.entryconfig("Refresh the figure", state = "disabled")            

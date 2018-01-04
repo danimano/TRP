@@ -21,7 +21,7 @@ class PearGUI(tk.Tk):
 
         # Defining the title of the window, the size and the icon 
         tk.Tk.title(self, "Pear")
-        tk.Tk.minsize(self, width = 800, height = 600)
+        tk.Tk.minsize(self, width = 800, height = 700)
         tk.Tk.iconbitmap(self, default = settings.ICON)
         tk.Tk.columnconfigure(self, 0, weight = 1)
         tk.Tk.rowconfigure(self, 0, weight = 1)
@@ -78,14 +78,18 @@ class PearGUI(tk.Tk):
         def quit_shortcut(event):
             return self.menu_bar.quit()
 
+        def save_image_shortcut(event):
+            return self.menu_bar.save_image()
+
         def save_figure_shortcut(event):
             return self.menu_bar.save_figure()
 
         def refresh_figure_shortcut(event):
             return self.active.plot_figure.refresh_figure(self.get_network())
 
-        self.bind("<Control-Key-o>", open_file_shortcut)
-        self.bind("<Control-Key-w>", close_file_shortcut)
-        self.bind("<Control-Key-q>", quit_shortcut)
-        self.bind("<Control-Key-s>", save_figure_shortcut)
-        self.bind("<Control-Key-r>", refresh_figure_shortcut)
+        self.bind("<Control-o>", open_file_shortcut)
+        self.bind("<Control-w>", close_file_shortcut)
+        self.bind("<Control-q>", quit_shortcut)
+        self.bind("<Control-s>", save_image_shortcut)
+        self.bind("<Control-Shift-s>", save_figure_shortcut)
+        self.bind("<Control-r>", refresh_figure_shortcut)

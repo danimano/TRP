@@ -3,6 +3,7 @@ import settings
 import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk
+import webcolors
 
 from pear.get_color_for_layeridx import get_color_for_layeridx
 from pear.layer import Layer
@@ -78,6 +79,8 @@ class LayerHandler(tk.Frame):
         # Clears the selection (mouse selection over the listbox)
         listbox_from.selection_clear(0, "end")
 
+        self.apply_color_to_layers()
+
 
     # Refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
     def refresh_layers(self, network):
@@ -98,10 +101,59 @@ class LayerHandler(tk.Frame):
             self.hidden_layers.delete(0, "end")
             self.shown_layers.delete(0, "end")
 
+        self.apply_color_to_layers()
+        
+
     def get_layers_to_draw(self):
         layers_to_draw = []
         current_items = self.shown_layers.get(0, "end")
         for item in current_items:
             layers_to_draw.append(int(item.split(" ")[-1]) - 1)
         return layers_to_draw
+
+
+    def apply_color_to_layers(self):
+        print("Applying color to layers")
+        layers = self.parent.network.get_layers()
+        hidden = self.hidden_layers.get(0,"end")
+        shown = self.shown_layers.get(0, "end")
+        cnt = 0
+        for item in hidden:
+            layer_number = int(item.split(" ")[-1]) - 1
+            color = layers[layer_number].color
+            color = (round(color[0] * 255), round(color[1] * 255), round(color[2] * 255))
+            real_color, closest_color = self.get_color_name(color)
+            self.hidden_layers.itemconfig(cnt, foreground = closest_color)
+            cnt += 1
+            
+        cnt = 0
+        for item in shown:
+            layer_number = int(item.split(" ")[-1]) - 1
+            color = layers[layer_number].color
+            color = (round(color[0] * 255), round(color[1] * 255), round(color[2] * 255))
+            real_color, closest_color = self.get_color_name(color)
+            self.shown_layers.itemconfig(cnt, foreground = closest_color)
+            cnt += 1
+
+
+    def closest_color(self, requested_color):
+        min_colors = {}
+        for key, name in webcolors.css3_hex_to_names.items():
+            r_c, g_c, b_c = webcolors.hex_to_rgb(key)
+            rd = (r_c - requested_color[0]) ** 2
+            gd = (g_c - requested_color[1]) ** 2
+            bd = (b_c - requested_color[2]) ** 2
+            min_colors[(rd + gd + bd)] = name
+        return min_colors[min(min_colors.keys())]
+
+    def get_color_name(self, requested_color):
+        try:
+            closest_name = actual_name = webcolors.rgb_to_name(requested_color)
+        except ValueError:
+            closest_name = self.closest_color(requested_color)
+            actual_name = None
+        return actual_name, closest_name
+            
+        
+        
 

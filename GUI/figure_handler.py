@@ -51,20 +51,19 @@ class FigureHandler(tk.Frame):
 
 
     def refresh_figure(self, network):
+        self.parent.update_refreshing_label(1)
+        
         print("Refresh figure!")
         self.f.clear()
-        print(network)
 
         # Vector containing the indices of the layers to draw
         layers_to_print = self.parent.layer_lists.get_layers_to_draw()
         
         if self.parent.bg_handler.bg_checkbox.instate(["selected"]):
-            print("Use approximated image as background!")
             figure = create_image(network, layers_to_print, self.resolution, None, True)
             
             
         elif self.parent.bg_handler.img_checkbox.instate(["selected"]):
-            print("Image as background!")
             if self.parent.bg_handler.background == []:
                 message = "No image background was loaded. The figure will be generated on a blank background. Please select an image as your background next time."
                 tk.messagebox.showwarning("No background loaded", message)
@@ -74,7 +73,6 @@ class FigureHandler(tk.Frame):
                 figure = create_image(network, layers_to_print, self.resolution, self.parent.bg_handler.background, False)
 
         else:
-            print("Blank background!")
             figure = create_image(network, layers_to_print, self.resolution, None, False)
 
         self.image = figure;
@@ -82,6 +80,8 @@ class FigureHandler(tk.Frame):
         ax.imshow(figure, cmap = "gray", interpolation = "nearest", origin = "upper")
         ax.axes.set_aspect('equal')
         self.canvas.draw()
+
+        self.parent.update_refreshing_label(0)
 
 
     def reset_figure(self):
