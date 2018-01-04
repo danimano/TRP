@@ -44,7 +44,7 @@ def create_image_from_lines(line_list, layer_indices, res=None, img=None, networ
     # If plot_output is False
     else:
         # If the image is not given -> create it with the given size (each element is 0)
-        if img == None:
+        if img is None:
             # debug branch
             if plot_output:
                 print("plot_output is true, but theta is empty")
@@ -60,7 +60,11 @@ def create_image_from_lines(line_list, layer_indices, res=None, img=None, networ
                 img = np.tile(img, (1, 1, 3))
             # If the image is colored (has 3 channels)
             elif img.shape[2] == 3:
-                img = np.transpose(img, (1,0,2))
+                img = np.transpose(img, (1, 0, 2))
+
+            elif img.shape[2] == 4:
+                img = img[:, :, :3]
+                img = np.transpose(img, (1, 0, 2))
             else:
                 raise ValueError("ERROR in create_image_from_lines: The given image is not a grayscale or colored RGB image\n"
                                  "(Does not have 1 neither 3 channels)")
