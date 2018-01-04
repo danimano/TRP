@@ -82,7 +82,7 @@ class MainPage(tk.Frame):
             self.plot_figure.canvas.draw()
 
     def update_refreshing_label(self, status):
-        if status == 1:
+        if status == True:
             self.refreshing.config(text = "Refreshing...")
         else:
             self.refreshing.config(text = "")

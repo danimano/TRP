@@ -91,5 +91,5 @@ class PearGUI(tk.Tk):
         self.bind("<Control-w>", close_file_shortcut)
         self.bind("<Control-q>", quit_shortcut)
         self.bind("<Control-s>", save_image_shortcut)
-        self.bind("<Control-Shift-s>", save_figure_shortcut)
+        self.bind("<Control-S>", save_figure_shortcut)
         self.bind("<Control-r>", refresh_figure_shortcut)

@@ -55,6 +55,9 @@ class BackgroundHandler(tk.Frame):
     def change_status_approximation(self):
         if self.img_checkbox.instate(["selected"]):
             self.img_checkbox.state(["!selected"])
+            self.loaded_file.config(text = settings.BACKGROUND)
+            if self.background is not None:
+                self.background = None
             self.browse_button.grid_remove()
             self.loaded_file.grid_remove()
             

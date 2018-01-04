@@ -11,6 +11,7 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
 from pear.create_image import create_image
+from pear.create_image_from_lines import create_image_from_lines
 
 class FigureHandler(tk.Frame):
 
@@ -23,7 +24,9 @@ class FigureHandler(tk.Frame):
 
         self.f = settings.FIGURE
         self.f.patch.set_facecolor('none')
-        self.resolution = [501, 501]
+
+        self.resolution = settings.RESOLUTION
+        self.previous_resolution = None
 
         self.image = None
 
@@ -51,29 +54,56 @@ class FigureHandler(tk.Frame):
 
 
     def refresh_figure(self, network):
-        self.parent.update_refreshing_label(1)
-        
-        print("Refresh figure!")
+        self.parent.update_refreshing_label(True)
         self.f.clear()
 
         # Vector containing the indices of the layers to draw
         layers_to_print = self.parent.layer_lists.get_layers_to_draw()
-        
+
+        # If the background approximation is checked
         if self.parent.bg_handler.bg_checkbox.instate(["selected"]):
-            figure = create_image(network, layers_to_print, self.resolution, None, True)
-            
-            
+            self.resolution = settings.RESOLUTION
+            # Recomputing everything only if there is a change in resolution
+            if self.resolution != self.previous_resolution:                
+                figure = create_image(network, layers_to_print, self.resolution, None, True)
+                self.previous_resolution = self.resolution
+            else:
+                figure = create_image_from_lines(network.get_lines(), layers_to_print, self.resolution, None, network, True)
+
+        # If the background image is checked
         elif self.parent.bg_handler.img_checkbox.instate(["selected"]):
-            if self.parent.bg_handler.background == []:
+            # If the background image is checked but not loaded in
+            if self.parent.bg_handler.background is None:
                 message = "No image background was loaded. The figure will be generated on a blank background. Please select an image as your background next time."
                 tk.messagebox.showwarning("No background loaded", message)
-                figure = create_image(network, layers_to_print, self.resolution, None, False)
-
+                # Recomputing everything only if there is a change in resolution
+                if self.resolution != self.previous_resolution:
+                    figure = create_image(network, layers_to_print, self.resolution, None, False)
+                    self.previous_resolution = self.resolution                    
+                else:
+                    figure = create_image_from_lines(network.get_lines(), layers_to_print, self.resolution, None, network, False)
+                    print("don't recompute everything")
+                    
+            # If the background image is checked and loaded in
             else:
-                figure = create_image(network, layers_to_print, self.resolution, self.parent.bg_handler.background, False)
+                self.previous_resolution = self.resolution
+                self.resolution = [self.parent.bg_handler.background.shape[1], self.parent.bg_handler.background.shape[0]]
+                # Recomputing everything only if there is a change in resolution
+                if self.resolution != self.previous_resolution:
+                    figure = create_image(network, layers_to_print, self.resolution, self.parent.bg_handler.background, False)
+                    self.previous_resolution = self.resolution                    
+                else:
+                    figure = create_image_from_lines(network.get_lines(), layers_to_print, self.resolution, self.parent.bg_handler.background, network, False)
 
+        # If the background is blank
         else:
-            figure = create_image(network, layers_to_print, self.resolution, None, False)
+            self.resolution = settings.RESOLUTION
+            # Recomputing everything only if there is a change in resolution
+            if self.resolution != self.previous_resolution:
+                figure = create_image(network, layers_to_print, self.resolution, None, False)
+                self.previous_resolution = self.resolution
+            else:
+                figure = create_image_from_lines(network.get_lines(), layers_to_print, self.resolution, None, network, False)
 
         self.image = figure;
         ax = self.f.add_subplot(1, 1, 1)
@@ -81,7 +111,7 @@ class FigureHandler(tk.Frame):
         ax.axes.set_aspect('equal')
         self.canvas.draw()
 
-        self.parent.update_refreshing_label(0)
+        self.parent.update_refreshing_label(False)
 
 
     def reset_figure(self):
