@@ -18,7 +18,7 @@ class LayerHandler(tk.Frame):
         add_icon = ImageTk.PhotoImage(file = settings.ADD)
         self.add_layer.config(image = add_icon, compound="right")
         self.add_layer.icon = add_icon
-        self.add_layer.grid(row = 0, column = 0, pady = 2)
+        self.add_layer.grid(row = 0, column = 0, columnspan = 2, pady = 2)
         
         # Displaying the list of all the available layers to draw
         self.hidden_layers = tk.Listbox(self, selectmode = "extended")
@@ -35,7 +35,7 @@ class LayerHandler(tk.Frame):
         remove_icon = ImageTk.PhotoImage(file = settings.REMOVE)
         self.rm_layer.config(image = remove_icon, compound = "right")
         self.rm_layer.icon = remove_icon
-        self.rm_layer.grid(row = 0, column = 2, pady = 2)
+        self.rm_layer.grid(row = 0, column = 2, columnspan = 2, pady = 2, padx = (0, 12))
 
         # Displaying the list of all the drawn layers
         self.shown_layers = tk.Listbox(self, selectmode = "extended")

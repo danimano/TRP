@@ -61,7 +61,7 @@ def create_image_from_lines(line_list, layer_indices, res=None, img=None, networ
             # If the image is colored (has 3 channels)
             elif img.shape[2] == 3:
                 img = np.transpose(img, (1, 0, 2))
-
+            # If the image has 4 channels, it is an RGBA image -> drop the fourth channel
             elif img.shape[2] == 4:
                 img = img[:, :, :3]
                 img = np.transpose(img, (1, 0, 2))

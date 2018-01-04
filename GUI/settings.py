@@ -1,4 +1,5 @@
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 def init():
     global ICON, FONT, ADD, REMOVE, REFRESH, INFO, FILENAME, FIGURE, OPENED, BACKGROUND
@@ -9,7 +10,7 @@ def init():
     REFRESH = "images/refresh-icon.png"
     INFO = "images/information-icon.png"
     FILENAME = "No file to visualize"
-    FIGURE = Figure()
+    FIGURE = plt.figure()
     OPENED = False
     BACKGROUND = "No file loaded..."
     

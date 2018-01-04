@@ -16,6 +16,8 @@ class PearGUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         settings.init()
+        # Will contain the network information once opened
+        self.network = None
 
         # Defining the title of the window, the size and the icon 
         tk.Tk.title(self, "Pear")
@@ -38,7 +40,7 @@ class PearGUI(tk.Tk):
        
         # Handles the case where there is only one frame 
         if len(frames) == 1:
-            frame = frames[0](container, self)
+            frame = frames[0](container, self, self.network)
             self.frames[frames[0]] = frame
             frame.grid(row = 0, column = 0, sticky = "nsew")
         else:
@@ -48,9 +50,6 @@ class PearGUI(tk.Tk):
                 frame.grid(row = 0, column = 0, sticky = "nsew")
             
         self.show_frame(mp.MainPage)
-
-        # Will contain the network information once opened
-        self.network = None
 
         # Main menu
         self.menu_bar = it.MenuInterface(self, self)
@@ -63,6 +62,9 @@ class PearGUI(tk.Tk):
         frame = self.frames[content]
         self.active = frame
         frame.tkraise()
+
+    def get_network(self):
+        return self.network
         
 
     # Binds the important menu commands to keyboard shortcuts
@@ -77,10 +79,10 @@ class PearGUI(tk.Tk):
             return self.menu_bar.quit()
 
         def save_figure_shortcut(event):
-            return self.menu_bar.save_figure(self)
+            return self.menu_bar.save_figure()
 
         def refresh_figure_shortcut(event):
-            return self.active.plot_figure.refresh_figure()
+            return self.active.plot_figure.refresh_figure(self.get_network())
 
         self.bind("<Control-Key-o>", open_file_shortcut)
         self.bind("<Control-Key-w>", close_file_shortcut)

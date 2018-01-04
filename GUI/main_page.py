@@ -18,9 +18,10 @@ from PIL import ImageTk
 # Main page class: contains our application
 class MainPage(tk.Frame):
     
-    def __init__(self, parent, controller, *args, **kwargs):
+    def __init__(self, parent, controller, network, *args, **kwargs):
         tk.Frame.__init__(self, parent)
         self.parent = parent
+        self.network = network
 
         # Defining which columns and rows will expand when the window will be resized
         self.grid_rowconfigure(0, weight = 0)
@@ -43,17 +44,12 @@ class MainPage(tk.Frame):
         self.layer_lists = lh.LayerHandler(self, self)
         self.layer_lists.grid(row = 2, column = 0, sticky = "nsew", pady = (45, 0))
 
-        # Checkbox to determine whether the view should be automatically scaled or not
-        self.scaling_checkbox = ttk.Checkbutton(self, text = "Automatically scale the plot and set the view")
-        self.scaling_checkbox.state(["!alternate"])
-        self.scaling_checkbox.grid(row = 3, column = 0, sticky = "s")
-
         # Creating a specific frame to put the Matplotlib widget and the toolbar in
         self.plot_figure = fh.FigureHandler(self)
         self.plot_figure.grid(row = 2, column = 1, sticky = "nsew", padx = 10, rowspan = 4)
 
         # Displaying the "Refresh the image" button
-        self.refresh = ttk.Button(self, text = "Refresh the figure", command = self.plot_figure.refresh_figure, state = "disabled")
+        self.refresh = ttk.Button(self, text = "Refresh the figure", command = lambda:self.plot_figure.refresh_figure(self.network), state = "disabled")
         refresh_icon = ImageTk.PhotoImage(file = settings.REFRESH)
         self.refresh.config(image = refresh_icon, compound = "right")
         self.refresh.icon = refresh_icon
@@ -72,13 +68,12 @@ class MainPage(tk.Frame):
         
 
     # When a figure is opened or closed, refresh the figure canvas accordingly
-    def reset_figure(self):        
+    def reset_figure(self, network):
+        
         if settings.OPENED:
-            self.plot_figure.refresh_figure()
-            a = self.plot_figure.f.add_subplot(111)
-            a.plot([1, 2, 3, 4, 5, 6, 7, 8], [8, 7, 6, 5, 4, 3, 2, 1])
+            self.plot_figure.refresh_figure(network)
         else:
             self.plot_figure.f.clear()
-        self.plot_figure.f.tight_layout()
-        self.plot_figure.refresh_canvas()
+            self.plot_figure.f.tight_layout()
+            self.plot_figure.canvas.draw()
 

@@ -8,6 +8,9 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+
+from pear.create_image import create_image
 
 class FigureHandler(tk.Frame):
 
@@ -19,6 +22,10 @@ class FigureHandler(tk.Frame):
         self.columnconfigure(0, weight = 1)
 
         self.f = settings.FIGURE
+        self.f.patch.set_facecolor('none')
+        self.resolution = [501, 501]
+
+        self.image = None
 
         self.canvas = FigureCanvasTkAgg(self.f, master = self)
         self.canvas.show()
@@ -43,26 +50,38 @@ class FigureHandler(tk.Frame):
         self.canvas._tkcanvas.pack(anchor = "center")
 
 
-    def refresh_figure(self):
+    def refresh_figure(self, network):
         print("Refresh figure!")
         self.f.clear()
+        print(network)
 
-        layer_to_print = self.parent.layer_lists.get_layers_to_draw()
+        # Vector containing the indices of the layers to draw
+        layers_to_print = self.parent.layer_lists.get_layers_to_draw()
         
         if self.parent.bg_handler.bg_checkbox.instate(["selected"]):
             print("Use approximated image as background!")
+            figure = create_image(network, layers_to_print, self.resolution, None, True)
+            
             
         elif self.parent.bg_handler.img_checkbox.instate(["selected"]):
             print("Image as background!")
-            if self.parent.bg_handler.background == None:
+            if self.parent.bg_handler.background == []:
                 message = "No image background was loaded. The figure will be generated on a blank background. Please select an image as your background next time."
                 tk.messagebox.showwarning("No background loaded", message)
+                figure = create_image(network, layers_to_print, self.resolution, None, False)
 
             else:
-                print("Perform computation")
+                figure = create_image(network, layers_to_print, self.resolution, self.parent.bg_handler.background, False)
 
         else:
             print("Blank background!")
+            figure = create_image(network, layers_to_print, self.resolution, None, False)
+
+        self.image = figure;
+        ax = self.f.add_subplot(1, 1, 1)
+        ax.imshow(figure, cmap = "gray", interpolation = "nearest", origin = "upper")
+        ax.axes.set_aspect('equal')
+        self.canvas.draw()
 
 
     def reset_figure(self):

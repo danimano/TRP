@@ -5,8 +5,9 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
-from PIL import Image
 from PIL import ImageTk
+import matplotlib.pyplot as plt
+import numpy as np
 
 class BackgroundHandler(tk.Frame):
 
@@ -70,15 +71,17 @@ class BackgroundHandler(tk.Frame):
             self.browse_button.grid_remove()
             self.loaded_file.grid_remove()
             self.loaded_file.config(text = settings.BACKGROUND)
-            if self.background != None:
-                self.background.close()
-            self.background = None
+            if self.background is not None:
+                self.background = None
 
 
     def load_image(self):        
         filename = tk.filedialog.askopenfilename(filetypes=[("JPG, PNG, TIFF, BMP", (".jpg", ".jpeg", ".png", ".tiff", ".bmp")), ("JPG",".jpg"), ("PNG", ".png"), ("JPEG", ".jpeg"), ("TIFF", ".tiff"), ("BMP", ".bmp")])
         if filename:
-            self.background = Image.open(filename)
+            self.background = plt.imread(filename)
+            if np.amax(self.background) > 1:
+                self.background = self.background / 255
+
             self.loaded_file.config(text = filename.split("/")[-1])
 
     def help_approximation(self):

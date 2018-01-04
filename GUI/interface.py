@@ -6,6 +6,7 @@ from tkinter import filedialog
 
 from pear.reader import read_tensorflow_file
 from pear.network import Network
+from pear.save_image import save_image
 
 from about_pear import AboutPear
 
@@ -24,9 +25,8 @@ class MenuInterface(tk.Frame):
         self.menu_bar.add_cascade(label = "File", menu = self.file_menu)
 
         self.figure_menu = tk.Menu(self.menu_bar, tearoff = 0)
-        self.figure_menu.add_command(label = "Refresh the figure", command = self.parent.active.plot_figure.refresh_figure, state = "disabled", accelerator = "Ctrl + R")
-        self.figure_menu.add_command(label = "Set the view to \"Automatic\"", command = lambda:print("Not supported yet!"), state = "disabled")
-        self.figure_menu.add_command(label = "Reset the view to default", command =lambda:self.reset_default_view(parent), state = "disabled")
+        self.figure_menu.add_command(label = "Refresh the figure", command = lambda:self.parent.active.plot_figure.refresh_figure(parent.network), state = "disabled", accelerator = "Ctrl + R")
+        self.figure_menu.add_command(label = "Reset the view", command =lambda:self.reset_default_view(parent), state = "disabled")
         self.menu_bar.add_cascade(label = "Figure", menu = self.figure_menu)
 
         self.help_menu = tk.Menu(self.menu_bar, tearoff = 0)
@@ -48,12 +48,14 @@ class MenuInterface(tk.Frame):
         print("Opening file!")
         filename = tk.filedialog.askopenfilename(filetypes=[("META",".meta")])
         if filename:
+            if settings.OPENED:
+                self.close_file()
+            
             # Activating all the menu options 
             self.file_menu.entryconfig("Save figure", state = "normal")
             self.file_menu.entryconfig("Close file", state = "normal")
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
-            self.figure_menu.entryconfig("Set the view to \"Automatic\"", state = "normal")
-            self.figure_menu.entryconfig("Reset the view to default", state = "normal")
+            self.figure_menu.entryconfig("Reset the view", state = "normal")
             self.parent.active.activate_refresh()
                     
             # Extracting the neural network's parameters from the file and creating the Layer objects out of them
@@ -69,6 +71,7 @@ class MenuInterface(tk.Frame):
             filename_path = parse_filename(filename)
             print("Loading the neural network's parameters from the TensorFlow file...")
             self.parent.network = Network(filename_path)
+            self.parent.active.network = self.parent.network
             
             settings.OPENED = True
 
@@ -76,14 +79,16 @@ class MenuInterface(tk.Frame):
             self.parent.active.refresh_filename("Visualizing \"" + self.parent.network.get_filename().split("/")[-1] + "\"")
             self.parent.active.layer_lists.refresh_layers(self.parent.network)
             self.parent.active.layer_lists.get_layers_to_draw()
-            self.parent.active.reset_figure()
+            self.parent.active.reset_figure(self.parent.get_network())
             
 
     # Saves the currently displayed figure
     def save_figure(self):
         if settings.OPENED:
             print("Saving file!")
-            self.parent.active.plot_figure.toolbar.save_figure()
+            filename = tk.filedialog.asksaveasfilename(filetypes=[('PNG', ".png")])
+            if filename:
+                save_image(filename, self.parent.active.plot_figure.image)
         
 
     # Closes an opened file
@@ -92,19 +97,18 @@ class MenuInterface(tk.Frame):
         if settings.OPENED:
             print("Closing file!")
             self.parent.network = None
+            self.parent.active.plot_figure.image = None
             
             self.file_menu.entryconfig("Save figure", state = "disabled")
             self.file_menu.entryconfig("Close file", state = "disabled")
-            self.figure_menu.entryconfig("Refresh the figure", state = "disabled")
-            self.figure_menu.entryconfig("Set the view to \"Automatic\"", state = "disabled")
-            self.figure_menu.entryconfig("Reset the view to default", state = "disabled")
+            self.figure_menu.entryconfig("Refresh the figure", state = "disabled")            
+            self.figure_menu.entryconfig("Reset the view", state = "disabled")
             self.parent.active.deactivate_refresh()
             settings.OPENED = False
-            self.parent.active.plot_figure.reset_figure()
             
             self.parent.active.refresh_filename(settings.FILENAME)
-            self.parent.active.layer_lists.refresh_layers(self.parent.network)
-            self.parent.active.reset_figure()
+            self.parent.active.layer_lists.refresh_layers(self.parent.get_network())
+            self.parent.active.reset_figure(self.parent.get_network())
 
     def reset_default_view(self, parent):
         print("Resetting the view to the original!")
