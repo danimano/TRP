@@ -8,6 +8,7 @@ def init():
     global ICON, FONT, ADD, REMOVE, REFRESH, INFO, FILENAME
     global FIGURE, OPENED, BACKGROUND, RESOLUTION
     global OPEN_ICON, CLOSE_ICON, SAVE_ICON, REFRESH_ICON, EXIT_ICON, HELP_ICON, DOC_ICON
+    global LOGO, URL, MISSING_DATA, MISSING_META, EMPTY_NETWORK
     ICON = "images/icon.ico"
     FONT= ("Georgia", 13)
     ADD = "images/add-icon.png"
@@ -26,5 +27,13 @@ def init():
     EXIT_ICON = "images/exit-icon.png"
     HELP_ICON = "images/help-icon.png"
     DOC_ICON = "images/documentation-icon.png"
+    LOGO = "images/pear_logo.png"
+    URL = "https://pypi.python.org/pypi/pearlib/"
+    MISSING_DATA = "The network you are trying to open presents missing or corrupted data and cannot be reconstructed. "
+    MISSING_DATA += "The .INDEX or .DATA files might be missing."
+    MISSING_META = "The .META file of the network you are trying to open does not seem to exist!"
+    EMPTY_NETWORK = "The network you are trying to open seems empty. "
+    EMPTY_NETWORK += "Either your network really is empty, or it does not follow the mandatory guidelines to open a TensorFlow network with Pear. "
+    EMPTY_NETWORK += "Please refer to the network guidelines."
     
     

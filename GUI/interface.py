@@ -3,6 +3,8 @@ import settings
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
+import tensorflow as tf
 
 from pearlib.network import Network
 from pearlib.save_image import save_image
@@ -38,7 +40,10 @@ class MenuInterface(tk.Frame):
 
         self.figure_menu = tk.Menu(self.menu_bar, tearoff = 0)
         self.figure_menu.add_command(label = "Refresh the figure", command = lambda:self.parent.active.plot_figure.refresh_figure(parent.network), state = "disabled", accelerator = "Ctrl + R")
-        self.figure_menu.add_command(label = "Reset the view", command =lambda:self.reset_default_view(parent), state = "disabled")
+        self.figure_menu.add_command(label = "Reset the view", command = lambda:self.reset_default_view(parent), state = "disabled")
+        self.figure_menu.add_command(label = "Back to previous view", command = self.parent.active.plot_figure.toolbar.back, state = "disabled")
+        self.figure_menu.add_command(label = "Forward to next view", command = self.parent.active.plot_figure.toolbar.forward, state = "disabled")
+        self.figure_menu.add_command(label = "Configure plot", command = self.parent.active.plot_figure.toolbar.configure_subplots, state = "disabled")
         self.menu_bar.add_cascade(label = "Figure", menu = self.figure_menu)
 
         self.help_menu = tk.Menu(self.menu_bar, tearoff = 0)
@@ -76,9 +81,13 @@ class MenuInterface(tk.Frame):
             self.file_menu.entryconfig("Close file", state = "normal")
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
             self.figure_menu.entryconfig("Reset the view", state = "normal")
+            self.figure_menu.entryconfig("Back to previous view", state = "normal")
+            self.figure_menu.entryconfig("Forward to next view", state = "normal")
+            self.figure_menu.entryconfig("Configure plot", state = "normal")
             self.parent.active.activate_refresh()
             self.parent.toolbar.activate_toolbar()
-                    
+
+            settings.OPENED = True
             
             def parse_filename(filename):
                 """
@@ -94,17 +103,33 @@ class MenuInterface(tk.Frame):
 
             # Extracting the neural network's parameters from the file and creating the Layer objects out of them
             filename_path = parse_filename(filename)
-            self.parent.network = Network(filename_path)
-            self.parent.active.network = self.parent.get_network()
-            print("Opened network!")
-            
-            settings.OPENED = True
 
-            # Displaying the filename without the whole path nor its extension
-            self.parent.active.refresh_filename("Visualizing \"" + self.parent.network.get_filename().split("/")[-1] + "\"")
-            self.parent.active.layer_lists.refresh_layers(self.parent.network)
-            self.parent.active.layer_lists.get_layers_to_draw()
-            self.parent.active.reset_figure(self.parent.get_network())
+            # Handling the errors that might happen when creating a network
+            error = False
+            try:
+                self.parent.network = Network(filename_path)
+            except Exception as e:
+                if type(e) == tf.errors.DataLossError:
+                    tk.messagebox.showerror("Missing or corrupted data!", settings.MISSING_DATA)
+                # This case (missing .META) should never be reached, but the exception is present just in case there would be a glitch somewhere                    
+                if type(e) == OSError:
+                    tk.messagebox.showerror("Missing .META file!", settings.MISSING_META)
+                if type(e) == ValueError:
+                    tk.messagebox.showerror("Empty network!", settings.EMPTY_NETWORK)
+                error = True
+
+            if error == False:
+                self.parent.active.network = self.parent.get_network()
+                print("Opened network!")
+
+                # Displaying the filename without the whole path nor its extension
+                self.parent.active.refresh_filename("Visualizing \"" + self.parent.network.get_filename().split("/")[-1] + "\"")
+                self.parent.active.layer_lists.refresh_layers(self.parent.network)
+                self.parent.active.layer_lists.get_layers_to_draw()
+                self.parent.active.reset_figure(self.parent.get_network())
+
+            if error == True:
+                self.close_file()
             
 
     def save_image(self):
@@ -142,6 +167,9 @@ class MenuInterface(tk.Frame):
             self.file_menu.entryconfig("Close file", state = "disabled")
             self.figure_menu.entryconfig("Refresh the figure", state = "disabled")            
             self.figure_menu.entryconfig("Reset the view", state = "disabled")
+            self.figure_menu.entryconfig("Back to previous view", state = "disabled")
+            self.figure_menu.entryconfig("Forward to next view", state = "disabled")
+            self.figure_menu.entryconfig("Configure plot", state = "disabled")
             self.parent.active.deactivate_refresh()
             self.parent.toolbar.deactivate_toolbar()
             settings.OPENED = False
