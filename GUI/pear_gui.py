@@ -1,6 +1,7 @@
 import settings
 import main_page as mp
 import interface as it
+import toolbar as tb
 
 import tkinter as tk
 from tkinter import ttk
@@ -12,8 +13,21 @@ from pear.get_color_for_layeridx import get_color_for_layeridx
 
 
 class PearGUI(tk.Tk):
+    """
+    The PearGUI object contains the whole wrapping frame for the graphical interface of the Pear library.
+    Its attributes are:
+        - network: the opened network.
+        - active: the page that is currently being shown to the user.
+        - frames: the list of pages that can be shown to the user.
+        - menu_bar: the menu bar containing the commands that can be executed by the user.
+        - toolbar: the toolbar, containing the buttons for the most useful menu commands.
+    """
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the PearGUI object.
+        Create a main container in which the pages will be displayed.
+        """
         tk.Tk.__init__(self, *args, **kwargs)
         settings.init()
         # Will contain the network information once opened
@@ -25,10 +39,11 @@ class PearGUI(tk.Tk):
         tk.Tk.iconbitmap(self, default = settings.ICON)
         tk.Tk.columnconfigure(self, 0, weight = 1)
         tk.Tk.rowconfigure(self, 0, weight = 1)
+        tk.Tk.rowconfigure(self, 1, weight = 19)
 
         # Creating the container of the window
-        container = tk.Frame(self)    
-        container.grid(row = 0, column = 0, stick = "nsew")
+        container = tk.Frame(self)
+        container.grid(row = 1, column = 0, sticky = "nsew", pady = 0)
         container.grid_rowconfigure(0, weight = 1)
         container.grid_columnconfigure(0, weight = 1)
         container.parent = self # Setting the application as the parent of the main container.
@@ -53,22 +68,32 @@ class PearGUI(tk.Tk):
 
         # Main menu
         self.menu_bar = it.MenuInterface(self, self)
+        self.toolbar = tb.Toolbar(self)
+        self.toolbar.grid(row = 0, column = 0, sticky = "new", ipady = 5)
 
         self.bind_all_actions()
 
         
-    # Puts the frame we want to show on the top of the stack
     def show_frame(self, content):
+        """
+        Put the page we want to show the user on the top of the stack.
+        """
         frame = self.frames[content]
         self.active = frame
         frame.tkraise()
 
+
     def get_network(self):
+        """
+        Get the network structure.
+        """
         return self.network
         
 
-    # Binds the important menu commands to keyboard shortcuts
     def bind_all_actions(self):
+        """
+        Bind the important menu commands to keyboard shortcuts.
+        """
         def open_file_shortcut(event):
             return self.menu_bar.open_file()
 
