@@ -4,15 +4,26 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 
-from pear.reader import read_tensorflow_file
 from pear.network import Network
 from pear.save_image import save_image
 
 from about_pear import AboutPear
 
 class MenuInterface(tk.Frame):
+    """
+    The MenuInterface object contains the GUI's menu.
+    Its attributes are:
+        - parent: the menu's parent, used to access the parent's other objects' functions.
+        - menu_bar: the literal menu bar.
+        - file_menu: the "File" menu, tied to the menu bar.
+        - figure_menu: the "Figure" menu, tied to the menu bar.
+        - help_menu: the "Help" menu, tied to the menu bar.
+    """
 
     def __init__(self, parent, controller, *args, **kwargs):
+        """
+        Initialize the MenuInterface object and sets the commands of each menus tied to the menu bar.
+        """
         self.parent = parent
         
         self.menu_bar = tk.Menu(parent)
@@ -39,14 +50,21 @@ class MenuInterface(tk.Frame):
         tk.Tk.config(parent, menu = self.menu_bar)
         
 
-    # Quits the program
     def quit(self):
-        print("Exiting the program!")
+        """
+        Exit the program.
+        """
         self.parent.destroy()
 
-    # Opens a file
+    
     def open_file(self):
-        print("Opening file!")
+        """
+        Open a dialog box asking the user to choose a file to open. Only META files can be opened.
+        The chosen file's path is parsed to be used as an input to the reader function.
+        The network is loaded, and its layers extracted and saved.
+        The menu commands that should not be active at all times are activated.
+        """
+        print("Opening file")        
         filename = tk.filedialog.askopenfilename(filetypes=[("META",".meta")])
         if filename:
             if settings.OPENED:
@@ -59,9 +77,13 @@ class MenuInterface(tk.Frame):
             self.figure_menu.entryconfig("Refresh the figure", state = "normal")
             self.figure_menu.entryconfig("Reset the view", state = "normal")
             self.parent.active.activate_refresh()
+            self.parent.toolbar.activate_toolbar()
                     
-            # Extracting the neural network's parameters from the file and creating the Layer objects out of them
+            
             def parse_filename(filename):
+                """
+                Withdraw the extension of the open file's full path.
+                """
                 filename_split = filename.split(".")
                 filename_path = ""
                 for i in range(0, len(filename_split) - 1):
@@ -70,10 +92,11 @@ class MenuInterface(tk.Frame):
                         filename_path += "."
                 return filename_path
 
+            # Extracting the neural network's parameters from the file and creating the Layer objects out of them
             filename_path = parse_filename(filename)
-            print("Loading the neural network's parameters from the TensorFlow file...")
             self.parent.network = Network(filename_path)
-            self.parent.active.network = self.parent.network
+            self.parent.active.network = self.parent.get_network()
+            print("Opened network!")
             
             settings.OPENED = True
 
@@ -84,8 +107,11 @@ class MenuInterface(tk.Frame):
             self.parent.active.reset_figure(self.parent.get_network())
             
 
-    # Saves the currently displayed figure
     def save_image(self):
+        """
+        Save the image currently displayed as a figure.
+        The image, unlike the figure, does not have any axis.
+        """
         if settings.OPENED:
             print("Saving file!")
             filename = tk.filedialog.asksaveasfilename(filetypes=[('PNG', ".png")])
@@ -94,36 +120,55 @@ class MenuInterface(tk.Frame):
 
 
     def save_figure(self):
+        """
+        Save the figure containing the currently displayed image.
+        The figure, unlike the image, has axis.
+        """
         if settings.OPENED:
             self.parent.active.plot_figure.toolbar.save_figure()
         
 
-    # Closes an opened file
     def close_file(self):
-        # Only works if a file is opened (useless to refresh the canvas & co if no file is opened)
-        if settings.OPENED:
-            print("Closing file!")
-            self.parent.network = None
-            self.parent.active.plot_figure.image = None
-            
+        """
+        Close the currently opened file.
+        Clear the network structure.        
+        Disable the menu commands that should not be active at all times.
+        """
+        print("Closing file")
+        # Only works if a file is opened
+        if settings.OPENED:            
             self.file_menu.entryconfig("Save image", state = "disabled")
             self.file_menu.entryconfig("Save figure", state = "disabled")
             self.file_menu.entryconfig("Close file", state = "disabled")
             self.figure_menu.entryconfig("Refresh the figure", state = "disabled")            
             self.figure_menu.entryconfig("Reset the view", state = "disabled")
             self.parent.active.deactivate_refresh()
+            self.parent.toolbar.deactivate_toolbar()
             settings.OPENED = False
             
             self.parent.active.refresh_filename(settings.FILENAME)
             self.parent.active.layer_lists.refresh_layers(self.parent.get_network())
             self.parent.active.reset_figure(self.parent.get_network())
+            self.parent.network = None
+            self.parent.active.network = None
+            
+            self.parent.active.plot_figure.reset_resolution()
+            self.parent.active.plot_figure.reset_image()
+            print(self.parent.active.plot_figure.resolution)
+            print(self.parent.active.plot_figure.previous_resolution)
+
 
     def reset_default_view(self, parent):
-        print("Resetting the view to the original!")
+        """
+        Reset the view of the network on the figure to its default settings.
+        """
         parent.active.plot_figure.toolbar.home()
 
 
     def documentation(self):
+        """
+        Display the documentation.
+        """
         documentation = tk.Tk()
         def close():
             documentation.destroy()            
@@ -134,8 +179,12 @@ class MenuInterface(tk.Frame):
         b1 = ttk.Button(documentation, text = "Ok!", command = close)
         b1.grid()
         documentation.mainloop()
+        
 
     def about(self):
+        """
+        Display information about the GUI and the library.
+        """
         about = tk.Tk()
         def close():
             about.destroy()            
