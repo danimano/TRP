@@ -58,8 +58,6 @@ class FigureHandler(tk.Frame):
         """
         Refresh the figure with the given network, the requested layers and the given options (approximated image background, image background, blank background).
         """
-        print(self.resolution)
-        print(self.previous_resolution)
         self.parent.update_refreshing_label(True) # Displays the label showing that the computations are being done
         self.f.clear()
         layers_to_print = self.parent.layer_lists.get_layers_to_draw()
