@@ -1,7 +1,7 @@
 import numpy as np
-from pear.draw_line import draw_line
-from pear.layer import *
-from pear.sigmoid import *
+from pearlib.draw_line import draw_line
+from pearlib.layer import *
+from pearlib.sigmoid import *
 
 
 def create_image_from_lines(line_list, layer_indices, res=None, img=None, network=None , plot_output=False):

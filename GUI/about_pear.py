@@ -29,9 +29,11 @@ class AboutPear(tk.Toplevel):
 
         self.initial_focus.focus_set()
         self.wait_window(self)
+        
 
     def body(self, master):
         pass
+
 
     def buttonbox(self):
         box = tk.Frame(self)

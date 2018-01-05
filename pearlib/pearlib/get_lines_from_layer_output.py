@@ -1,7 +1,7 @@
 import numpy as np
-from pear.line import Line
-from pear.apply_nonlinearity import *
-from pear.network import *
+from pearlib.line import Line
+from pearlib.apply_nonlinearity import *
+from pearlib.network import *
 
 # The boundary can not be on the first column or row of the output h - is it a problem?...
 

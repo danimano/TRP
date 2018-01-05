@@ -1,8 +1,8 @@
-from pear.reader import read_tensorflow_file
-from pear.get_color_for_layeridx import get_color_for_layeridx
-from pear.layer import Layer
-from pear.calculate_all_output import calculate_all_output
-from pear import get_all_lines # To avoid import conflicts with get_all_lines
+from pearlib.reader import read_tensorflow_file
+from pearlib.get_color_for_layeridx import get_color_for_layeridx
+from pearlib.layer import Layer
+from pearlib.calculate_all_output import calculate_all_output
+from pearlib import get_all_lines # To avoid import conflicts with get_all_lines
 import numpy as np
 
 

@@ -8,8 +8,8 @@ from tkinter import ttk
 from tkinter import filedialog
 from matplotlib.figure import Figure
 
-from pear.layer import Layer
-from pear.get_color_for_layeridx import get_color_for_layeridx
+from pearlib.layer import Layer
+from pearlib.get_color_for_layeridx import get_color_for_layeridx
 
 
 class PearGUI(tk.Tk):
@@ -34,7 +34,7 @@ class PearGUI(tk.Tk):
         self.network = None
 
         # Defining the title of the window, the size and the icon 
-        tk.Tk.title(self, "Pear")
+        tk.Tk.title(self, "Ap'Pear")
         tk.Tk.minsize(self, width = 800, height = 700)
         tk.Tk.iconbitmap(self, default = settings.ICON)
         tk.Tk.columnconfigure(self, 0, weight = 1)

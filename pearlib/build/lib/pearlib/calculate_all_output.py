@@ -1,18 +1,15 @@
-import numpy as np
-from pear.layer import Layer
-from pear.apply_nonlinearity import apply_nonlinearity
-from pear.sigmoid import *
+from pearlib.apply_nonlinearity import apply_nonlinearity
+from pearlib.sigmoid import *
 
 # Correctness should be checked by someone else as well
 # there is no kind of error handling so far
 
 
-def calculate_output(layers, res, layer_idx):
-    """Calculates the  output of the given layer for all the possible inputs of the network in size.
+def calculate_all_output(layers, res):
+    """Calculates the  output of the layers for all the possible inputs of the network in size.
 
-        layers -- Ordered list of layers.
-                               (Weight matrices and bias vectors of the network.)
-        layer_idx -- index of the layer, for which we want to determine the output
+        layers ~ ([layer_i]) -- Ordered list of layers. All of them
+                               Weight matrices and bias vectors of the network.
         res -- resolution of the plane
 
         The output is calculated in the following way:
@@ -20,25 +17,23 @@ def calculate_output(layers, res, layer_idx):
             h_i = W_i*h_{i-1}+b_i   for i = 1..layer_idx
             for the last layer: apply_sigmoid
 
-        Returns the output(s) of the queried layer in a 3D array, where each plane represents the output of one neuron.
-            (If the layer has n_i neuron, the size of the output will be (s_x2-s_x1+1) * (s_y2-s_y1+1) * n_i).
+        Returns the output(s) of all the layers in a list.
+            the first element of this list is also a list, containing the outputs of the first layer, etc
     """
 
     # debug print
-    print("--function calculate_output starts...")
+    print("--function calculate_all_output starts...")
     # TODO - Missing test if we really have enough (and the right) layer in theta and in layer_idx
     #   we can test the size of the weight matrices eg
 
+    # TODO if the size is in wrong order (eg s_x1 > s_x2)
 
-    if layer_idx >= len(layers):
-        raise ValueError("ERROR in calculate_output: layer_idx exceeds the number of layers in the network")
-
-    # generate input field - it is always 2 dimensional
+    # Generate input field - it is always 2 dimensional
     #   If the images have the size [-1,1]^2 then needs to be refine
     x = np.linspace(-1,1, res[0])
     y = np.linspace(-1,1, res[1])
 
-    # initialize h_new for the first layer
+    # Initialize h_new for the first layer
     h_new = np.zeros((layers[0].n_input, len(x)*len(y)))
     # TODO there should be a better way to do this...
     for i in range(0, len(x)):
@@ -48,9 +43,11 @@ def calculate_output(layers, res, layer_idx):
     # print the input pairs - debug
     print("\nInput of the 0th layer\n", h_new)
 
-    # for each layer 0..layer_idx
-    for layer_i in range(0, layer_idx+1):
-        # save the output of the previous layer/input of the layer to h_old
+    # Array containing the outputs
+    all_output = []
+    # For each layer
+    for layer_i in range(0, len(layers)):
+        # Save the output of the previous layer/input of the layer to h_old
         h_old = h_new
 
         # Calculate the layer's output
@@ -72,14 +69,13 @@ def calculate_output(layers, res, layer_idx):
         # Print the output of the layer - debug
         print("Output of layer ", layer_i, " after nonlinearity:\n",h_new)
 
-    # Convert the output of the layer in the above defined format
-    h_new = np.reshape(h_new.transpose(), [len(x), len(y), h_new.shape[0]], 'C')
+        all_output.append(np.reshape(h_new.transpose(), [len(x), len(y), h_new.shape[0]], 'C'))
 
     # debug print
-    print("\n--function calculate_output ends...\n")
+    print("\n--function calculate_all_output ends...\n")
 
-    # return the output of the layer_idxth layer
-    return h_new
+    # Return all the outputs
+    return all_output
 
 
 #################################################

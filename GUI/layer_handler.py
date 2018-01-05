@@ -5,8 +5,8 @@ from tkinter import ttk
 from PIL import ImageTk
 import webcolors
 
-from pear.get_color_for_layeridx import get_color_for_layeridx
-from pear.layer import Layer
+from pearlib.get_color_for_layeridx import get_color_for_layeridx
+from pearlib.layer import Layer
 
 class LayerHandler(tk.Frame):
     """

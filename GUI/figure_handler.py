@@ -7,11 +7,10 @@ from tkinter import messagebox
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
-from pear.create_image import create_image
-from pear.create_image_from_lines import create_image_from_lines
+from pearlib.create_image import create_image
+from pearlib.create_image_from_lines import create_image_from_lines
 
 class FigureHandler(tk.Frame):
     """

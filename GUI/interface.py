@@ -4,8 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 
-from pear.network import Network
-from pear.save_image import save_image
+from pearlib.network import Network
+from pearlib.save_image import save_image
 
 from about_pear import AboutPear
 
@@ -185,13 +185,5 @@ class MenuInterface(tk.Frame):
         """
         Display information about the GUI and the library.
         """
-        about = tk.Tk()
-        def close():
-            about.destroy()            
-        about.wm_title("About Pear v1.0")
-        message = "The documentation will be written here"
-        label = ttk.Label(about, text = message)
-        label.grid()
-        b1 = ttk.Button(about, text = "Ok!", command = close)
-        b1.grid()
+        about = AboutPear(self.parent)
         about.mainloop()            

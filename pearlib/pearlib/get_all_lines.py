@@ -1,6 +1,6 @@
-from pear.get_lines_from_layer_output import*
-from pear.get_color_for_layeridx import *
-from pear.network import *
+from pearlib.get_lines_from_layer_output import*
+from pearlib.get_color_for_layeridx import *
+from pearlib.network import *
 
 
 def get_all_lines(network):

@@ -1,5 +1,5 @@
-from pear.apply_nonlinearity import apply_nonlinearity
-from pear.sigmoid import *
+from pearlib.apply_nonlinearity import apply_nonlinearity
+from pearlib.sigmoid import *
 
 # Correctness should be checked by someone else as well
 # there is no kind of error handling so far
