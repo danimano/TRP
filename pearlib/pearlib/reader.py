@@ -1,30 +1,32 @@
 import numpy as np
-import tensorflow as tf
+from tensorflow import train
+from tensorflow import errors
+from tensorflow import Graph
+from tensorflow import get_default_graph
+from tensorflow import Session
+
 
 def read_tensorflow_file(fname):
-    new_graph = tf.Graph()
+    new_graph = Graph()
 
-    with tf.Session(graph=new_graph) as sess:
+    with Session(graph=new_graph) as sess:
         # Handles case where there is no .meta file
         try:
-            saver = tf.train.import_meta_graph(fname + '.meta')
+            train.import_meta_graph(fname + '.meta')
         except OSError:
             raise OSError("The .META file could not be found!")
             
-        graph = tf.get_default_graph()
+        graph = get_default_graph()
 
         # Handles the case where data is corrupted or missing
         try:
-            tf.train.Saver().restore(sess, fname)
-        except tf.errors.DataLossError:
-            raise tf.errors.DataLossError(None, None, "A file is missing (.INDEX or .DATA), and the network could not be reconstructed, or the data is corrupted!")
+            train.Saver().restore(sess, fname)
+        except errors.DataLossError:
+            raise errors.DataLossError(None, None, "A file is missing (.INDEX or .DATA), and the network could not be reconstructed, or the data is corrupted!")
         
         theta = []
-        tmp = []
-        tmpW = [0] * int(graph.get_collection_ref('trainable_variables').__len__() / 2)
-        tmpb = [0] * int(graph.get_collection_ref('trainable_variables').__len__() / 2)
-
-        file_writer = tf.summary.FileWriter(fname, sess.graph)
+        tmpW = [0] * int(len(graph.get_collection_ref('trainable_variables')) / 2)
+        tmpb = [0] * int(len(graph.get_collection_ref('trainable_variables')) / 2)
 
         for x in graph.get_collection_ref('trainable_variables'):
             if x.name[0] == 'W' or x.name[0] == 'b':
@@ -33,10 +35,11 @@ def read_tensorflow_file(fname):
                 else:
                     tmpb[int(x.name[1:-2]) - 1] = x.eval(sess)
                     
-    if tmpW.__len__() != tmpb.__len__():
-        print("Missing data!")
+    if len(tmpW) != len(tmpb):
+        raise errors.DataLossError(None, None,
+                                   "The data is corrupted, or the naming was improper!")
         
-    for x in range(tmpW.__len__()):
+    for x in range(len(tmpW)):
         theta += [(tmpW[x], tmpb[x])]
 
     # Checking that an actual network was loaded in, and not an empty one
@@ -53,6 +56,7 @@ def read_tensorflow_file(fname):
         raise ValueError("The network that was loaded in is empty! The input network you used probably does not follow our guidelines!")
     else:
         return theta
-        
 
+
+print(read_tensorflow_file("/home/danimano/PycharmProjects/testnet/test/wood.jpg"))
 
