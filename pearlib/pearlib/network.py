@@ -7,11 +7,11 @@ import numpy as np
 
 
 class Network:
-    """Contains the structure a neural network given as an input."""
+    """Contains the structure of a neural network given as input."""
 
     def __init__(self, filename=None):
-        """Create a new NetworkHandler object.
-        A NetworkHandler object has five attributes:
+        """Create a new Network object.
+        A Network object has five attributes:
         - a name "filename" (here, its full path without any extension)
         - parameters "theta" containing, for each layer, weight and bias
         - a list of layers "layers" containing Layer objects that correspond to a layer
