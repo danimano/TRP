@@ -1,29 +1,23 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
-
 def get_color_for_layeridx(layeridx):
-    base6_colors = [[1,0,0], [0,1,0], [0,0,1], [1,1,0], [1,0,1], [0,1,1]]
+    """For an index it gives back an associated color (3 channel, each between 0 and 1)"""
+
+    # For the first six layer: base colors
     if layeridx < 6:
+        base6_colors = [[1,0,0], [0,1,0], [0,0,1], [1,1,0], [1,0,1], [0,1,1]]
         return base6_colors[layeridx]
+    # From the 7th index: calculate a unique color
     else:
-        ro = 77
-        bo = 91
-        go = 111
+        # increment in red component
+        ro = 161
+        # increment in blue component
+        bo = 111
+        # increment in green component
+        go = 67
+        # maximum color
+        nc = 256.0
         if layeridx%3 == 0:
-            return [((layeridx-5)*ro %255)/255, ((layeridx-6)*bo %255)/255, ((layeridx-6)*go %255)/255]
+            return [((layeridx-5) * ro % nc) / nc, ((layeridx-6) * bo % nc) / nc, ((layeridx-6) * go % nc) / nc]
         elif layeridx%3 == 1:
-            return [((layeridx-6) * ro % 255) / 255, ((layeridx-5) * bo % 255) / 255, ((layeridx-6) * go % 255) / 255]
+            return [((layeridx-6) * ro %nc) / nc, ((layeridx-5) * bo % nc) / nc, ((layeridx-6) * go % nc) / nc]
         else:
-            return [((layeridx-6) * ro % 255) / 255, ((layeridx-6) * bo % 255) / 255, ((layeridx-5) * go % 255) / 255]
-
-############################
-# # TEST
-
-# img = np.zeros((10,10,3))
-# for i in range(img.shape[0]):
-#     for j in range(img.shape[1]):
-#         img[i,j] = get_color_for_layeridx(i*img.shape[1]+j)
-# fig, ax = plt.subplots()
-# ax.imshow(img, cmap='gray',interpolation='nearest', origin='upper')
-# plt.show()
+            return [((layeridx-6) * ro % nc) / nc, ((layeridx-6) * bo % nc) / nc, ((layeridx-5) * go % nc) / nc]
