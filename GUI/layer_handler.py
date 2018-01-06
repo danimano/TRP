@@ -3,13 +3,27 @@ import settings
 import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk
+import webcolors
 
-from pear.get_color_for_layeridx import get_color_for_layeridx
-from pear.layer import Layer
+from pearlib.get_color_for_layeridx import get_color_for_layeridx
+from pearlib.layer import Layer
 
 class LayerHandler(tk.Frame):
+    """
+    The LayerHandler object handles the user's choices as to which layers should be drawn on the figure and which should not.
+    Its attributes are:
+        - parent: the parent of the LayerHandler object, which gives access to the parent's objects' functions.
+        - add_layer: the button moving layers from the hidden list to the showing list.
+        - hidden_layers: the listbox containing all the layers that are currently not being shown on the image.
+        - rm_layer: the button moving layers from the showing list to the hidden list.
+        - shown_layers: the listbox containing all the layers that are currently being shown on the image.
+        - info_last_layer: the message explaining why the last layer of the network never appears in any of the lists.
+    """
 
     def __init__(self, parent, controller, *args, **kwargs):
+        """
+        Initialize the LayerHandler object.
+        """
         tk.Frame.__init__(self, parent)
         self.parent = parent
 
@@ -55,9 +69,11 @@ class LayerHandler(tk.Frame):
 
 
 
-    # Adds or removes one or several layers from the displayed figure
     def change_layer(self, listbox_from, listbox_to):
-
+        """
+        Move the selected layers in listbox_from to listbox_to.
+        Make sure the lists are updated and re-ordered.
+        """
         # Gets the selected layers and removes them from the list they are taken from
         current = listbox_from.curselection()
         for item in current[: : -1]:
@@ -77,11 +93,15 @@ class LayerHandler(tk.Frame):
 
         # Clears the selection (mouse selection over the listbox)
         listbox_from.selection_clear(0, "end")
+        self.apply_color_to_layers()
 
 
-    # Refresh the listboxes containing the layers (when opening, filling them; when closing, emptying them)
     def refresh_layers(self, network):
-        print("Refreshing the layers' listboxes!")
+        """
+        Refresh the listboxes containing the layers.
+        When opening a file, fill them.
+        When closing a file, empty them.
+        """
         if settings.OPENED:
             self.add_layer.config(state = "normal")
             self.rm_layer.config(state = "normal")
@@ -98,10 +118,71 @@ class LayerHandler(tk.Frame):
             self.hidden_layers.delete(0, "end")
             self.shown_layers.delete(0, "end")
 
+        self.apply_color_to_layers()
+        
+
     def get_layers_to_draw(self):
+        """
+        Retrieve the indices of the layers contained in the to-show list.
+        """
         layers_to_draw = []
         current_items = self.shown_layers.get(0, "end")
         for item in current_items:
             layers_to_draw.append(int(item.split(" ")[-1]) - 1)
         return layers_to_draw
 
+
+    def apply_color_to_layers(self):
+        """
+        Sets the color of the layer in the listbox to the color of this layer's lines in the figure.
+        """
+        layers = self.parent.network.get_layers()
+        hidden = self.hidden_layers.get(0,"end")
+        shown = self.shown_layers.get(0, "end")
+
+        # Getting the html color (or closest color) to the RGB code.
+        cnt = 0
+        for item in hidden:
+            layer_number = int(item.split(" ")[-1]) - 1
+            color = layers[layer_number].color # Retrieving the layer's color
+            # Converting the color from double to uint8 and making a tuple out of it
+            color = (round(color[0] * 255), round(color[1] * 255), round(color[2] * 255)) 
+            real_color, closest_color = self.get_color_name(color)
+            self.hidden_layers.itemconfig(cnt, foreground = closest_color)
+            cnt += 1
+            
+        cnt = 0
+        for item in shown:
+            layer_number = int(item.split(" ")[-1]) - 1
+            color = layers[layer_number].color # Retrieving the layer's color
+            # Converting the color from double to uint8 and making a tuple out of it
+            color = (round(color[0] * 255), round(color[1] * 255), round(color[2] * 255))
+            real_color, closest_color = self.get_color_name(color)
+            self.shown_layers.itemconfig(cnt, foreground = closest_color)
+            cnt += 1
+
+
+    def closest_color(self, requested_color):
+        """
+        Given a RGB color code that does not correspond to any HTML color code, find the closest HTML color code.
+        """
+        min_colors = {}
+        for key, name in webcolors.css3_hex_to_names.items():
+            r_c, g_c, b_c = webcolors.hex_to_rgb(key)
+            rd = (r_c - requested_color[0]) ** 2
+            gd = (g_c - requested_color[1]) ** 2
+            bd = (b_c - requested_color[2]) ** 2
+            min_colors[(rd + gd + bd)] = name
+        return min_colors[min(min_colors.keys())]
+
+
+    def get_color_name(self, requested_color):
+        """
+        Given a RGB color, find its matching HTML color code or, if it does not exist, its closest matching color code.
+        """
+        try:
+            closest_name = actual_name = webcolors.rgb_to_name(requested_color)
+        except ValueError:
+            closest_name = self.closest_color(requested_color)
+            actual_name = None
+        return actual_name, closest_name
