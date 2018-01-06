@@ -68,8 +68,7 @@ class MenuInterface(tk.Frame):
         The chosen file's path is parsed to be used as an input to the reader function.
         The network is loaded, and its layers extracted and saved.
         The menu commands that should not be active at all times are activated.
-        """
-        print("Opening file")        
+        """    
         filename = tk.filedialog.askopenfilename(filetypes=[("META",".meta")])
         if filename:
             if settings.OPENED:
@@ -120,7 +119,6 @@ class MenuInterface(tk.Frame):
 
             if error == False:
                 self.parent.active.network = self.parent.get_network()
-                print("Opened network!")
 
                 # Displaying the filename without the whole path nor its extension
                 self.parent.active.refresh_filename("Visualizing \"" + self.parent.network.get_filename().split("/")[-1] + "\"")
@@ -138,7 +136,6 @@ class MenuInterface(tk.Frame):
         The image, unlike the figure, does not have any axis.
         """
         if settings.OPENED:
-            print("Saving file!")
             filename = tk.filedialog.asksaveasfilename(filetypes=[('PNG', ".png")])
             if filename:
                 save_image(filename, self.parent.active.plot_figure.image)
@@ -159,7 +156,6 @@ class MenuInterface(tk.Frame):
         Clear the network structure.        
         Disable the menu commands that should not be active at all times.
         """
-        print("Closing file")
         # Only works if a file is opened
         if settings.OPENED:            
             self.file_menu.entryconfig("Save image", state = "disabled")
@@ -182,8 +178,6 @@ class MenuInterface(tk.Frame):
             
             self.parent.active.plot_figure.reset_resolution()
             self.parent.active.plot_figure.reset_image()
-            print(self.parent.active.plot_figure.resolution)
-            print(self.parent.active.plot_figure.previous_resolution)
 
 
     def reset_default_view(self, parent):
