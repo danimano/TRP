@@ -7,7 +7,7 @@ import numpy as np
 
 
 class Network:
-    """Contains the structure a neural network given as an input."""
+    """Contains the structure of a neural network given as input."""
 
     def __init__(self, filename=None):
         """Create a new NetworkHandler object.
