@@ -56,7 +56,3 @@ def read_tensorflow_file(fname):
         raise ValueError("The network that was loaded in is empty! The input network you used probably does not follow our guidelines!")
     else:
         return theta
-
-
-print(read_tensorflow_file("/home/danimano/PycharmProjects/testnet/test/wood.jpg"))
-
