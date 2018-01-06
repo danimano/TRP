@@ -16,16 +16,17 @@ unset logscale y
 #set y2tics 1
 set format y "%g"
 set format x "%g"
-plot '2_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#00FF00" title "2 layer", \
-'3_smart_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#DD0000" title "3 layer", \
-'3_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#00DD00" title "3s layer", \
-'4_smart_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#BB0000" title "4 layer", \
-'4_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#00BB00" title "4s layer", \
-'5_smart_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#990000" title "5 layer", \
-'5_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#009900" title "5s layer", \
-'6_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#007700" title "6 layer", \
-'7_layer_runs/wood.plt' using 1:2 with lines lw 4 lt rgb "#005500" title "7 layer"
-#title "Baboon" 
+set macro
+name = "wood"
+plot '2_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#0000FF" title "2 layer", \
+'3_smart_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#CC0000" title "3s layer", \
+'3_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#0000CC" title "3 layer", \
+'4_smart_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#880000" title "4s layer", \
+'4_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#000099" title "4 layer", \
+'5_smart_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#440000" title "5s layer", \
+'5_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#000066" title "5 layer", \
+'6_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#000033" title "6 layer", \
+'7_layer_runs/'.name.'.plt' using 1:2 with lines lw 4 lt rgb "#000000" title "7 layer"
 set terminal push
 set terminal postscript eps color
 set out 'wood.eps'
