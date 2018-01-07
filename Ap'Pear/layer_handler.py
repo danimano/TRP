@@ -111,6 +111,8 @@ class LayerHandler(tk.Frame):
             for i in range(0, layer_number - 2):
                 self.hidden_layers.insert("end", "Layer " + str(i + 1))
             self.shown_layers.insert("end", "Layer " + str(layer_number - 1))
+
+            self.apply_color_to_layers()
             
         else: # Deleting the layers
             self.add_layer.config(state = "disabled")
@@ -118,7 +120,7 @@ class LayerHandler(tk.Frame):
             self.hidden_layers.delete(0, "end")
             self.shown_layers.delete(0, "end")
 
-        self.apply_color_to_layers()
+        
         
 
     def get_layers_to_draw(self):

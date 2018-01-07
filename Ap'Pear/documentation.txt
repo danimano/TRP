@@ -1,0 +1,18 @@
+Why does no file appear in the dialog box when I am trying to open a network, although I am in the right directory?
+	=> If no file appears in the dialog box, it means that there is no .META file in the directory you are in. 
+	=> To open a network, you need to select the .META file!
+
+Why do I get a message saying that my network is corrupted or missing files when I am trying to open it?
+	=> If you are getting such an error, it means that Pear's TensorFlow reader could reconstruct your network's graph from the file you opened. 
+	=> It means that you are either missing the .INDEX and/or the .DATA-00000-OF-00001, or that your network was not saved properly, and thus contains corrupted data.
+
+Why do I get a message saying that my network is empty when I am trying to open it?
+	=> Getting this message means that Pear's TensorFlow reader could read your input, but found out that the weight matrices and bias vectors were equal to 0 for each layer.
+	=> It means that you are either trying to import a network that is indeed empty -- and then you will not be able to see anything with Ap'Pear, or a network that did not follow our naming convention.
+
+Why does the last layer of my network not appear in the layers lists?
+	=> For all the layers but the last, Pear uses the rectified linear unit (ReLU) as the non-linearity operator. For the very last layer of the network, we are using the sigmoid function as the non-linearity operator. 
+	=> This leads to the last layer having no decision boundaries to plot, which is why it does not appear in the layers lists.
+
+After opening a network with Ap'Pear, a new folder with the name of the network's files (minus their extensions) containing an "events.out.tfevents..." file appears. Is it normal?
+	=> It is! It simply is the proof that TensorFlow is working its magic! Those files are not needed by Pear and Ap'Pear to work properly, so feel free to send them to the trashcan if you want to.
