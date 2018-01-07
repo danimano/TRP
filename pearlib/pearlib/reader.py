@@ -15,7 +15,7 @@ def read_tensorflow_file(fname):
     tmpW = []
     tmpb = []
 
-    with Session(graph=new_graph) as sess:
+    with Session(graph = new_graph) as sess:
         # Handles case where there is no .meta file
         try:
             import_meta_graph(fname + '.meta')

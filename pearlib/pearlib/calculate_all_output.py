@@ -22,10 +22,10 @@ def calculate_all_output(layers, res):
     y = np.linspace(-1, 1, res[1])
 
     # Initialize h_new for the first layer
-    h_new = np.zeros((layers[0].n_input, len(x)*len(y)))
+    h_new = np.zeros((layers[0].n_input, len(x) * len(y)))
     for i in range(0, len(x)):
         for j in range(0, len(y)):
-            h_new[:,i*len(y)+j] = [x[i], y[j]]
+            h_new[:, i * len(y) + j] = [x[i], y[j]]
 
     # Array containing the outputs
     all_output = []
@@ -39,7 +39,7 @@ def calculate_all_output(layers, res):
         h_new = layers[layer_i].calculate_layer_output_mat(h_old)
 
         # If it is not the output layer: apply the nonlinearity
-        if layer_i != len(layers)-1:
+        if layer_i != len(layers) - 1:
             apply_nonlinearity(h_new)
         # If it is the last layer: apply sigmoid
         else:
