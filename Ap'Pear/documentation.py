@@ -3,7 +3,6 @@ import settings
 import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk
-import webbrowser
 
 class Documentation(tk.Tk):
     """
@@ -20,25 +19,16 @@ class Documentation(tk.Tk):
         tk.Tk.configure(self)
         tk.Tk.title(self, "Ap'Pear Help")
         tk.Tk.iconbitmap(self, default = settings.ICON)
-        tk.Tk.minsize(self, width = 400, height = 600)
-        self.resizable(0, 0)
-        self.geometry('{}x{}'.format(700, 770))
 
-        frame = tk.Canvas(self)
+        frame = tk.Frame(self)
         frame.pack()
 
-        title = tk.Label(frame, text = "AP'PEAR", font = ("Helvetica", 14, "bold"))
-        title.pack()
-
-        guidelines = open("./guidelines.txt")
-        guide = tk.Message(frame, width = 700, text = guidelines.read(), font = ("Helvetica", 10))
-        guide.pack(padx = 5)
 
         faq = tk.Label(frame, text = "Frequently Asked Questions", font = ("Helvetica", 12, "bold"))
-        faq.pack(pady = [10, 0])
+        faq.pack()
 
         doc = open("./documentation.txt")
-        faq_answer = tk.Message(frame, width = 690, text = doc.read(), font = ("Helvetica", 10))
-        faq_answer.pack(padx = 5, pady = 5)
+        faq_answer = tk.Message(frame, text = doc.read(), font = ("Helvetica", 10))
+        faq_answer.pack(padx = 5, pady = 5, fill = "both")
         
         
