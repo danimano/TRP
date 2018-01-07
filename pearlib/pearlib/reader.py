@@ -1,5 +1,4 @@
-import numpy as np
-from tensorflow.python.training.saver import import_meta_graph, Saver
+from tensorflow.python.training import *
 from tensorflow import errors
 from tensorflow import Graph
 from tensorflow import get_default_graph
@@ -18,7 +17,7 @@ def read_tensorflow_file(fname):
     with Session(graph=new_graph) as sess:
         # Handles case where there is no .meta file
         try:
-            import_meta_graph(fname + '.meta')
+            saver.import_meta_graph(fname + '.meta')
         except OSError:
             raise OSError("The .META file could not be found!")
 
@@ -26,7 +25,7 @@ def read_tensorflow_file(fname):
 
         # Handles the case where data is corrupted or missing
         try:
-            Saver().restore(sess, fname)
+            saver.Saver().restore(sess, fname)
         except errors.DataLossError:
             raise errors.DataLossError(None, None,
                                        "A file is missing (.INDEX or .DATA), and the network could not be reconstructed, or the data is corrupted!")
