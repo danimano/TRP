@@ -5,6 +5,6 @@ class Line:
     # Color of the line (unique for each layer)
     color = [1, 1, 1]
 
-    def __init__(self, _points=[], _color=[1,1,1]):
+    def __init__(self, _points= [], _color = [1, 1, 1]):
         self.points = _points
         self.color = _color

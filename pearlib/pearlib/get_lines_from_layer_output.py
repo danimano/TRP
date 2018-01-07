@@ -3,7 +3,7 @@ from pearlib.line import Line
 from pearlib.network import *
 
 
-def get_lines_from_layer_output(network, layer_idx, linecolor=[1,1,1]):
+def get_lines_from_layer_output(network, layer_idx, linecolor = [1, 1, 1]):
     """
     From the output, calculate the boundary lines.
     -- network: network object (containing the outputs of its layer)
@@ -60,6 +60,6 @@ def get_lines_from_layer_output(network, layer_idx, linecolor=[1,1,1]):
     # For each neuron (channel) find the zero elements in h_conv. Convert them to Line objects,
     #   and append these Line objects ordered to the lines list
     for k in range(0, h_conv.shape[2]):
-        lines.append(Line(np.array(np.where(h_conv[:, :, k] == 0)), _color=linecolor))
+        lines.append(Line(np.array(np.where(h_conv[:, :, k] == 0)), _color = linecolor))
 
     return lines

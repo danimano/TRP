@@ -9,7 +9,7 @@ import numpy as np
 class Network:
     """Contains the structure of a neural network given as input."""
 
-    def __init__(self, filename=None):
+    def __init__(self, filename = None):
         """Create a new Network object.
         A Network object has five attributes:
         - a name "filename" (here, its full path without any extension)

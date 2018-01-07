@@ -1,0 +1,12 @@
+Ap'Pear is a graphic wrapper of the Pear library, which aims at visualizing TensorFlow's neural networks' decision boundaries.
+
+To do so, you will need to have a network built with TensorFlow and saved to the following files:
+	- A .meta file
+	- A .index file
+	- A .data-00000-of-00001
+
+Beware! 
+To be able to use Pear and Ap'Pear, you will not only need to have our network saved into the file types mentioned below, but you will also have to respect the naming convention we fixed for your weights and layers:
+	- All the weight matrices and bias vectors have to be named
+	- The name of a weight matrix must start with the letter "W", followed by the layer number it is coming from. For example, the weight matrix from the first layer should be named "W1".
+	- The name of a bias vector must start with the letter "b", followed by the layer number it is coming from. For example, the bias vector from the first layer should be named "b1".

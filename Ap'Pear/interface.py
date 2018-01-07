@@ -10,6 +10,8 @@ from pearlib.network import Network
 from pearlib.save_image import save_image
 
 from about_pear import AboutPear
+from about_app import AboutApp
+from documentation import Documentation
 
 class MenuInterface(tk.Frame):
     """
@@ -48,8 +50,9 @@ class MenuInterface(tk.Frame):
 
         self.help_menu = tk.Menu(self.menu_bar, tearoff = 0)
         self.help_menu.add_command(label = "About Pear", command = self.about)
+        self.help_menu.add_command(label = "About Ap'Pear", command = self.about_app)
         self.help_menu.add_separator()
-        self.help_menu.add_command(label = "Pear Help", command = self.documentation)
+        self.help_menu.add_command(label = "Ap'Pear F.A.Q", command = self.documentation)
         self.menu_bar.add_cascade(label = "Help", menu = self.help_menu)
 
         tk.Tk.config(parent, menu = self.menu_bar)
@@ -126,7 +129,7 @@ class MenuInterface(tk.Frame):
                 self.parent.active.layer_lists.get_layers_to_draw()
                 self.parent.active.reset_figure(self.parent.get_network())
 
-            if error == True:
+            else:
                 self.close_file()
             
 
@@ -191,21 +194,20 @@ class MenuInterface(tk.Frame):
         """
         Display the documentation.
         """
-        documentation = tk.Tk()
-        def close():
-            documentation.destroy()            
-        documentation.wm_title("Documentation")
-        message = "The documentation will be written here"
-        label = ttk.Label(documentation, text = message)
-        label.grid()
-        b1 = ttk.Button(documentation, text = "Ok!", command = close)
-        b1.grid()
+        documentation = Documentation()
         documentation.mainloop()
         
 
     def about(self):
         """
-        Display information about the GUI and the library.
+        Display information about the library.
         """
         about = AboutPear(self.parent)
         about.mainloop()            
+
+    def about_app(self):
+        """
+        Display information about the GUI.
+        """
+        about_app = AboutApp(self.parent)
+        about_app.mainloop()

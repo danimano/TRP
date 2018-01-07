@@ -2,7 +2,7 @@ from pearlib.get_all_lines import *
 from pearlib.create_image_from_lines import *
 
 
-def create_image(network, layer_indices, res=None, img=None, plot_output=False):
+def create_image(network, layer_indices, res = None, img = None, plot_output = False):
     """Generates the image with the boundary lines.
         -- network: The Network object representing the network
         -- layer_indices: indicates which layers we would like to draw
@@ -28,4 +28,4 @@ def create_image(network, layer_indices, res=None, img=None, plot_output=False):
     all_the_lines = network.get_lines()
 
     # Return the created image
-    return create_image_from_lines(all_the_lines, layer_indices, res=res, img=img, network=network, plot_output=plot_output)
+    return create_image_from_lines(all_the_lines, layer_indices, res = res, img = img, network = network, plot_output = plot_output)

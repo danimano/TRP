@@ -7,7 +7,7 @@ class Layer:
     b = []  # np.array!
     n_neurons = 0
     n_input = 0
-    color = [1,1,1]
+    color = [1, 1, 1]
 
     def __init__(self, _W, _b, _color):
         self.W = _W

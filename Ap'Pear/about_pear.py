@@ -7,7 +7,7 @@ import webbrowser
 
 class AboutPear(tk.Toplevel):
     """
-    The AboutPear object is a top-level frame that contains a information box about what the Pear is about.
+    The AboutPear object is a top-level frame that contains an information box about what the Pear library is about.
     Its attributes are:
         - parent: the frame over which we are raising the top-level frame.
         - initial_focus: the element on which the program focus should be.
@@ -22,12 +22,12 @@ class AboutPear(tk.Toplevel):
         self.parent = parent                
 
         # Defining the title of the window and its size
-        tk.Toplevel.title(self, "About Ap'Pear v1.0")
+        tk.Toplevel.title(self, "About Pear v1.0")
         tk.Toplevel.resizable(self, width = False, height = False)
         self.geometry('{}x{}'.format(237, 400))
 
         # Defining the main body of the top-level
-        body = tk.Frame(self, bd = "2", relief = "ridge", width = 270)
+        body = tk.Frame(self, bd = 2, relief = "ridge", width = 270)
         self.initial_focus = self.body(body)
         body.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = "nsew")
 
@@ -50,7 +50,8 @@ class AboutPear(tk.Toplevel):
         logo.image = logo_img
         logo.grid(row = 0, column = 0)
 
-        info_message = "A Python graphical user interface for the Python library Pear"
+        
+        info_message = "A Python library to visualize neural networks built with TensorFlow" 
         info = tk.Message(master, text = info_message, width = 210)
         info.grid(row = 1, column = 0, padx = 3, pady = 6, sticky = "w")
 

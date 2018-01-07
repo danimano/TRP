@@ -4,7 +4,7 @@ from pearlib.layer import *
 from pearlib.sigmoid import *
 
 
-def create_image_from_lines(line_list, layer_indices, res=None, img=None, network=None , plot_output=False):
+def create_image_from_lines(line_list, layer_indices, res = None, img = None, network = None , plot_output = False):
     """Generates the image with the boundary lines.
         -- line_list: contains all the lines from all the layers (list of lists)
         -- layer_indices: indicates which layers we would like to draw
@@ -27,11 +27,11 @@ def create_image_from_lines(line_list, layer_indices, res=None, img=None, networ
     if plot_output:
         # If in the last layer we truly have only 1 neuron
         layers = network.get_layers()
-        if layers[(len(layers)-1)].n_neurons == 1:
+        if layers[(len(layers) - 1)].n_neurons == 1:
             # Get the output of the last layer
             all_output = network.get_all_output()
             # Copy the output of the last layer to be the background
-            img = np.array(all_output[len(all_output)-1], copy=True)
+            img = np.array(all_output[len(all_output) - 1], copy = True)
             # Expand the image to be colored
             img = np.tile(img, (1, 1, 3))
         # If in the last layer we have more than one neuron
@@ -42,8 +42,8 @@ def create_image_from_lines(line_list, layer_indices, res=None, img=None, networ
     else:
         # If the image is not given -> create it with the given resolution (each element is 1 (white))
         if img is None:
-            x = np.linspace(-1,1, res[0])
-            y = np.linspace(-1,1, res[1])
+            x = np.linspace(-1, 1, res[0])
+            y = np.linspace(-1, 1, res[1])
             img = np.ones((len(x), len(y), 3))
 
         # If the image is given
