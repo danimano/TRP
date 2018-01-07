@@ -5,6 +5,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 import tensorflow as tf
+from tensorflow.python.framework.errors_impl import NotFoundError
 
 from pearlib.network import Network
 from pearlib.save_image import save_image
@@ -113,6 +114,8 @@ class MenuInterface(tk.Frame):
             except Exception as e:
                 if type(e) == tf.errors.DataLossError:
                     tk.messagebox.showerror("Missing or corrupted data!", settings.MISSING_DATA)
+                if type(e) == NotFoundError:
+                    tk.messagebox.showerror("Missing or corrupted data!", settings.MISSING_DATA)                    
                 # This case (missing .META) should never be reached, but the exception is present just in case there would be a glitch somewhere                    
                 if type(e) == OSError:
                     tk.messagebox.showerror("Missing .META file!", settings.MISSING_META)

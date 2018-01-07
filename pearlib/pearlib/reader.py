@@ -1,5 +1,6 @@
 from tensorflow.python.training import *
 from tensorflow import errors
+from tensorflow.python.framework.errors_impl import NotFoundError
 from tensorflow import Graph
 from tensorflow import get_default_graph
 from tensorflow import Session
@@ -14,7 +15,7 @@ def read_tensorflow_file(fname):
     tmpW = []
     tmpb = []
 
-    with Session(graph = new_graph) as sess:
+    with Session(graph=new_graph) as sess:
         # Handles case where there is no .meta file
         try:
             saver.import_meta_graph(fname + '.meta')
@@ -28,7 +29,9 @@ def read_tensorflow_file(fname):
             saver.Saver().restore(sess, fname)
         except errors.DataLossError:
             raise errors.DataLossError(None, None,
-                                       "A file is missing (.INDEX or .DATA), and the network could not be reconstructed, or the data is corrupted!")
+                                       "The data seems to be corrupted and the network could not be reconstructed!")
+        except NotFoundError:
+            raise NotFoundError(None, None, "A file (.INDEX or .DATA) could not be found!")
 
         theta = []
         tmpW = [0] * int(len(graph.get_collection_ref('trainable_variables')) / 2)
@@ -37,9 +40,9 @@ def read_tensorflow_file(fname):
         for x in graph.get_collection_ref('trainable_variables'):
             if x.name[0] == 'W' or x.name[0] == 'b':
                 if x.name[0] == 'W':
-                    tmpW[int(x.name[1:-2]) - 1] = x.eval(sess)
+                    tmpW[int(x.name[1 : -2]) - 1] = x.eval(sess)
                 else:
-                    tmpb[int(x.name[1:-2]) - 1] = x.eval(sess)
+                    tmpb[int(x.name[1 : -2]) - 1] = x.eval(sess)
 
     if len(tmpW) != len(tmpb):
         raise errors.DataLossError(None, None,
