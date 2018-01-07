@@ -5,7 +5,7 @@ def readme():
 		return f.read()
 
 setup(name = 'pearlib',
-      version = '0.3',
+      version = '0.4',
       description = 'The library that makes neural networks appear',
       long_description = readme(),
       classifiers = [
@@ -21,6 +21,6 @@ setup(name = 'pearlib',
       author_email = 'candice.bentejac@etu.u-bordeaux.fr',
       license = 'BSD-3-Clause',
       packages = ['pearlib'],
-      install_requires = ['numpy', 'matplotlib', 'pillow', 'tensorflow'],
+      install_requires = ['numpy', 'matplotlib', 'pillow', 'tensorflow', 'webcolors', 'webbrowser'],
       zip_safe = False)
 
