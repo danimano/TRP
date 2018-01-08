@@ -4,7 +4,7 @@ set encoding utf8
 set xlabel "Number of parameters" font ", 16"
 set ylabel "Mean square error" font ", 16"
 set grid
-set key font ", 18"
+unset key #font ", 18"
 set tics font ", 18"
 unset logscale x 
 #set xrange [0.000000e+00:5.000000e+00]
@@ -18,6 +18,7 @@ set format y "%g"
 set format x "%g"
 set macro
 name = "cameraman"
+set title name font ", 24"
 plot '../3_smart_layer_runs/'.name.'.plt' using (($1+1)*1000):2 with lines lw 4 lt rgb "#FF0000" title "3s layer", \
 '../3_layer_runs/'.name.'.plt' using (($1+1)*1000):2 with lines lw 4 lt rgb "#0000FF" title "3 layer", \
 '../4_smart_layer_runs/'.name.'.plt' using (($1+1)*1000):2 with lines lw 4 lt rgb "#FF7700" title "4s layer", \
