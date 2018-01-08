@@ -56,9 +56,13 @@ def create_image_from_lines(line_list, layer_indices, res = None, img = None, ne
             # If the image is colored (has 3 channels)
             elif img.shape[2] == 3:
                 img = np.transpose(img, (1, 0, 2))
+            # If the image has 4 channels, it is an RGBA image -> drop the fourth channel       
+            elif img.shape[2] == 4:       
+                img = img[:, :, :3]       
+                img = np.transpose(img, (1, 0, 2))
             else:
                 raise ValueError("The given image is neither a grayscale nor a colored RGB image\n"
-                                 "(Does not have 1 neither 3 channels)")
+                                 "(Does not have 1 nor 3 channels)")
 
     # For all the layers in layer_indices, draw the boundary lines
     for i in range(len(layer_indices)):

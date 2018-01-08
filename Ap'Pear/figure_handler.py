@@ -116,6 +116,7 @@ class FigureHandler(tk.Frame):
         """
         Reset the figure to an empty one.
         """
+        self.f.clear()
         self.f = settings.FIGURE
 
 

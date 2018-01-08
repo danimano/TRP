@@ -144,7 +144,11 @@ class MenuInterface(tk.Frame):
         if settings.OPENED:
             filename = tk.filedialog.asksaveasfilename(filetypes=[('PNG', ".png")])
             if filename:
-                save_image(filename, self.parent.active.plot_figure.image)
+                # Checking whether the user added the extension and if not, add it
+                if filename.split(".")[-1] == "png" or filename.split(".")[-1] == "PNG":
+                    save_image(filename, self.parent.active.plot_figure.image)
+                else:
+                    save_image(filename + ".png", self.parent.active.plot_figure.image)
 
 
     def save_figure(self):

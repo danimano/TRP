@@ -107,11 +107,20 @@ class BackgroundHandler(tk.Frame):
         """
         filename = tk.filedialog.askopenfilename(filetypes=[("JPG, PNG, TIFF, BMP", (".jpg", ".jpeg", ".png", ".tiff", ".bmp")), ("JPG",".jpg"), ("PNG", ".png"), ("JPEG", ".jpeg"), ("TIFF", ".tiff"), ("BMP", ".bmp")])
         if filename:
-            self.background = plt.imread(filename)
-            if np.amax(self.background) > 1:
-                self.background = self.background / 255
+            error = False
+            # Making sure the image can be imported
+            try:
+                self.background = plt.imread(filename)
+            except Exception:
+                tk.messagebox.showerror("Cannot load the image!", "The image you selected could not be opened. Please try with another image.")
+                error = True
 
-            self.loaded_file.config(text = filename.split("/")[-1])
+            if error == False:
+                if np.amax(self.background) > 1:
+                    self.background = self.background / 255
+                self.loaded_file.config(text = filename.split("/")[-1])
+            else:
+                self.background = None
 
 
     def help_approximation(self):

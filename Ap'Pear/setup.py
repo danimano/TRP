@@ -4,12 +4,13 @@ import sys
 
 os.environ['TCL_LIBRARY'] = "C:\\Program Files\\Python36\\tcl\\tcl8.6"
 os.environ['TK_LIBRARY'] = "C:\\Program Files\\Python36\\tcl\\tk8.6"
+os.environ['TENSORFLOW_LIBRARY'] = "C:\\Program Files\\Python36\\Lib\\site-packages\\tensorflow"
 
 base = None
 if sys.platform == "win32":
     base = "Win32GUI"
 
-includes = ["tkinter", "_tkinter", "numpy.core._methods", "numpy.lib.format", "tensorflow"]
+includes = ["tkinter", "_tkinter", "numpy.core._methods", "numpy.lib.format"]
 include_files = ["C:\\Program Files\\Python36\\DLLs\\tcl86t.dll",
                  "C:\\Program Files\\Python36\\DLLs\\tk86t.dll",
                  "C:\\Program Files\\Python36\\DLLs\\_tkinter.pyd",

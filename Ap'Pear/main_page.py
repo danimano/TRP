@@ -101,7 +101,7 @@ class MainPage(tk.Frame):
         if settings.OPENED:
             self.plot_figure.refresh_figure(network)
         else:
-            self.plot_figure.f.clear()
+            self.plot_figure.reset_figure()
             self.plot_figure.f.tight_layout()
             self.plot_figure.canvas.draw()
 

@@ -5,7 +5,7 @@ def readme():
 		return f.read()
 
 setup(name = 'pearlib',
-      version = '0.6',
+      version = '0.7',
       description = 'The library that makes neural networks appear',
       long_description = readme(),
       classifiers = [
@@ -18,10 +18,10 @@ setup(name = 'pearlib',
       keywords = 'tensorflow neural networks visualization',
       python_requires = '>=3',
       url = 'https://github.com/danimano/TRP',
-      author = 'Candice Bentéjac, Anna Csorgo, Daniel Hajto',
+      author = 'Candice Bentéjac, Anna Csörgő and Dániel Hajtó',
       author_email = 'candice.bentejac@etu.u-bordeaux.fr',
       license = 'BSD-3-Clause',
       packages = ['pearlib'],
-      install_requires = ['numpy', 'matplotlib', 'pillow', 'tensorflow', 'webcolors'],
+      install_requires = ['numpy', 'matplotlib', 'Pillow', 'tensorflow', 'webcolors'],
       zip_safe = False)
 
