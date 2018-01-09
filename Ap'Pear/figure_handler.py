@@ -9,6 +9,8 @@ matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 import matplotlib.pyplot as plt
 
+import numpy as np
+
 from pearlib.create_image import create_image
 from pearlib.create_image_from_lines import create_image_from_lines
 
@@ -86,14 +88,15 @@ class FigureHandler(tk.Frame):
                     
             # If the background image is checked and loaded in
             else:
+                bkg = np.array(self.parent.bg_handler.background) # Copy to avoid writing on the image
                 self.previous_resolution = self.resolution
-                self.resolution = [self.parent.bg_handler.background.shape[1], self.parent.bg_handler.background.shape[0]]
+                self.resolution = [bkg.shape[1], bkg.shape[0]]
                 
                 if self.resolution != self.previous_resolution:
-                    figure = create_image(network, layers_to_print, self.resolution, self.parent.bg_handler.background, False)
+                    figure = create_image(network, layers_to_print, self.resolution, bkg, False)
                     self.previous_resolution = self.resolution                    
                 else:
-                    figure = create_image_from_lines(network.get_lines(), layers_to_print, self.resolution, self.parent.bg_handler.background, network, False)
+                    figure = create_image_from_lines(network.get_lines(), layers_to_print, self.resolution, bkg, network, False)
 
         # If the background is blank
         else:

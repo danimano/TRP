@@ -120,8 +120,6 @@ class LayerHandler(tk.Frame):
             self.hidden_layers.delete(0, "end")
             self.shown_layers.delete(0, "end")
 
-        
-        
 
     def get_layers_to_draw(self):
         """
