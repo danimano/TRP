@@ -5,7 +5,7 @@ def readme():
 		return f.read()
 
 setup(name = 'pearlib',
-      version = '0.7',
+      version = '1.0',
       description = 'The library that makes neural networks appear',
       long_description = readme(),
       classifiers = [
